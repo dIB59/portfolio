@@ -61,10 +61,10 @@ export function Car() {
 		const enginePower = 28
 		const brakePower = 1
 		const maxSpeed = 22
-		const friction = 0.85
+		const friction = 0.96
 		const turnSpeed = 0.9
-		const driftTurnSpeed = 1.2
-		const driftFriction = 0.94
+		const driftTurnSpeed = 1.9
+		const driftFriction = 0.99
 		const gripRecovery = 2.5
 		const minSpeedToTurn = 0.5
 
@@ -78,6 +78,7 @@ export function Car() {
 		const isDrifting = keys.brake && Math.abs(forwardSpeed) > 6 && isTryingToTurn
 		const driftIntensity = Math.min(Math.abs(sidewaysSpeed) / 8, 1)
 
+
 		if (keys.forward) {
 			velocityX.current += forwardX * enginePower * dt
 			velocityZ.current += forwardZ * enginePower * dt
@@ -87,19 +88,6 @@ export function Car() {
 			velocityZ.current -= forwardZ * enginePower * 0.6 * dt
 		}
 
-		if (keys.brake) {
-			const brakeAmount = brakePower * dt
-			const currentForwardVel = forwardSpeed
-			const newForwardVel =
-				currentForwardVel > 0
-					? Math.max(0, currentForwardVel - brakeAmount)
-					: Math.min(0, currentForwardVel + brakeAmount)
-
-			const brakeFactor = isDrifting ? 0.4 : 0.8
-			const forwardDiff = (newForwardVel - currentForwardVel) * brakeFactor
-			velocityX.current += forwardX * forwardDiff
-			velocityZ.current += forwardZ * forwardDiff
-		}
 
 		const currentSpeed = Math.sqrt(velocityX.current ** 2 + velocityZ.current ** 2)
 
