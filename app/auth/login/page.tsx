@@ -41,7 +41,6 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-background">
-      <ThreeBackground />
       <div className="w-full max-w-sm">
         <Card className="border-border/50 shadow-lg">
           <CardHeader>
