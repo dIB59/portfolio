@@ -33,7 +33,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          John Doe
+          Ibrahim Iqbal
         </motion.h1>
         <motion.p
           className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8 font-light"
