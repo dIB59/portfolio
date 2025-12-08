@@ -52,6 +52,8 @@ export function Car() {
 	const smoothLookAt = useRef(new THREE.Vector3(0, 0, 0))
 
 	const keys = useKeyboardControls()
+	//TODO:
+	//Fix immediate breaking
 
 	useFrame((state, delta) => {
 		if (!carRef.current) return
