@@ -15,7 +15,7 @@ export function Hero() {
       >
         <Link
           href="/admin"
-          className="p-2 rounded-full hover:bg-foreground/5 transition-colors text-muted-foreground hover:text-foreground"
+          className="p-2 rounded-full transition-colors text-muted-foreground hover:text-foreground"
           title="Admin"
         >
           <Settings className="w-5 h-5" />

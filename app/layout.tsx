@@ -10,7 +10,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Ibrahim Iqbal | Portfolio",
   description: "Full-Stack Developer - Career journey and project showcase",
-  generator: "v0.app",
   icons: {
     icon: [
       {

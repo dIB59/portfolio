@@ -20,9 +20,9 @@ const ParticlesComponent = ({ className }: { className: string }) => {
         });
     }, []);
 
-    const baseColor = '#000000'; 
+    const baseColor = '#ffffff'; 
     
-    const foregroundColor = '#000000';
+    const foregroundColor = '#1F1F1F';
 
     const options = useMemo(
         () => ({
@@ -30,7 +30,7 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 color: {
                     value: baseColor,
                 },
-                opacity: 0,
+                opacity: 1,
             },
             fpsLimit: 120,
             interactivity: {
@@ -51,9 +51,8 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                     },
                     grab: {
                         distance: 150,
-                        // line_linked is used for backward compatibility, often replaced by 'links' properties
-                        line_linked: { 
-                             opacity: 20 // This is a high opacity value, typically 0 to 1
+                        links: { 
+                             opacity: 0.25 // This is a high opacity value, typically 0 to 1
                         } 
                     },
                 },

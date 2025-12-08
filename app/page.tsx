@@ -3,7 +3,7 @@ import { getProjects } from "@/lib/supabase/projects"
 import { getProjectUpdates } from "@/lib/supabase/project-updates"
 import type { TimelineEntry } from "@/lib/projects-data"
 import { Timeline } from "@/components/timeline/timeline"
-import ParticlesComponent, { ThreeBackground } from "@/components/three-background"
+import ParticlesComponent from "@/components/three-background"
 
 export default async function PortfolioPage() {
   // 1. Fetch data on the server (in parallel)
