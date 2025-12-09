@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { authenticate, logout, addProblem } from "@/lib/leetcode-store"
-import { PROBLEM_TYPES, type ProblemType, type Confidence } from "@/lib/leetcode-types"
+import { PROBLEM_TYPES, type ProblemType, type Confidence, Difficulty } from "@/lib/leetcode-types"
 import { Lock, LogOut, Plus, ChevronUp } from "lucide-react"
 
 interface LeetCodeAdminProps {
@@ -29,6 +29,8 @@ export function LeetCodeAdmin({ isAdmin, setIsAdmin, onProblemAdded }: LeetCodeA
   const [problemType, setProblemType] = useState<ProblemType>("Array")
   const [stuckOn, setStuckOn] = useState("")
   const [confidence, setConfidence] = useState<Confidence>("green")
+  const [problemDifficulty, setProblemDifficulty] = useState<Difficulty>("easy")
+
   const [solvedAt, setSolvedAt] = useState(new Date().toISOString().split("T")[0])
   const [notes, setNotes] = useState("")
 
@@ -56,6 +58,7 @@ export function LeetCodeAdmin({ isAdmin, setIsAdmin, onProblemAdded }: LeetCodeA
     addProblem({
       problemName: problemName.trim(),
       problemNumber: problemNumber ? Number.parseInt(problemNumber) : undefined,
+      difficulty: problemDifficulty,
       problemType,
       stuckOn: stuckOn.trim() || undefined,
       confidence,
@@ -171,6 +174,22 @@ export function LeetCodeAdmin({ isAdmin, setIsAdmin, onProblemAdded }: LeetCodeA
                         </SelectTrigger>
                         <SelectContent>
                           {PROBLEM_TYPES.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="problemDifficulty">Problem Difficulty *</Label>
+                      <Select value={problemDifficulty} onValueChange={(v) => setProblemDifficulty(v as Difficulty)}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["easy", "medium", "hard"].map((type) => (
                             <SelectItem key={type} value={type}>
                               {type}
                             </SelectItem>
