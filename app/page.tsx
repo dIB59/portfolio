@@ -1,13 +1,16 @@
-import { Hero } from "@/components/hero" // adjust path
-import { getProjects } from "@/lib/supabase/projects"
-import { getProjectUpdates } from "@/lib/supabase/project-updates"
-import type { TimelineEntry } from "@/lib/projects-data"
-import { Timeline } from "@/components/timeline/timeline"
-import ParticlesComponent from "@/components/three-background"
+import { Hero } from "@/components/hero"; // adjust path
+import { getProjects } from "@/lib/supabase/projects";
+import { getProjectUpdates } from "@/lib/supabase/project-updates";
+import type { TimelineEntry } from "@/lib/projects-data";
+import { Timeline } from "@/components/timeline/timeline";
+import ParticlesComponent from "@/components/three-background";
 
 export default async function PortfolioPage() {
   // 1. Fetch data on the server (in parallel)
-  const [projects, updates] = await Promise.all([getProjects(), getProjectUpdates()])
+  const [projects, updates] = await Promise.all([
+    getProjects(),
+    getProjectUpdates(),
+  ]);
 
   // 2. Prepare the data (Same logic you had in useEffect)
   const timelineEntries: TimelineEntry[] = [
@@ -25,19 +28,29 @@ export default async function PortfolioPage() {
       month: u.month,
       data: u,
     })),
-  ]
+  ];
 
   const monthOrder: Record<string, number> = {
-    January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
-    July: 7, August: 8, September: 9, October: 10, November: 11, December: 12,
-  }
+    January: 1,
+    February: 2,
+    March: 3,
+    April: 4,
+    May: 5,
+    June: 6,
+    July: 7,
+    August: 8,
+    September: 9,
+    October: 10,
+    November: 11,
+    December: 12,
+  };
 
   timelineEntries.sort((a, b) => {
-    if (b.year !== a.year) return b.year - a.year
-    const aMonth = a.month ? monthOrder[a.month] || 0 : 0
-    const bMonth = b.month ? monthOrder[b.month] || 0 : 0
-    return bMonth - aMonth
-  })
+    if (b.year !== a.year) return b.year - a.year;
+    const aMonth = a.month ? monthOrder[a.month] || 0 : 0;
+    const bMonth = b.month ? monthOrder[b.month] || 0 : 0;
+    return bMonth - aMonth;
+  });
 
   return (
     <main>
@@ -49,5 +62,5 @@ export default async function PortfolioPage() {
         <Timeline initialEntries={timelineEntries} />
       </div>
     </main>
-  )
+  );
 }
