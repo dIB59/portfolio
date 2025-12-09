@@ -1,14 +1,13 @@
-'use client';
+"use client";
 
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { useEffect, useMemo, useState } from 'react';
-import { loadSlim } from '@tsparticles/slim';
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { useEffect, useMemo, useState } from "react";
+import { loadSlim } from "@tsparticles/slim";
 
-import { cn } from '@/lib/utils'; // Assuming this is your class utility function
-import { AnimatePresence, motion } from 'framer-motion'; // Using 'framer-motion' instead of 'motion/react' for standard setup
+import { cn } from "@/lib/utils"; // Assuming this is your class utility function
+import { AnimatePresence, motion } from "framer-motion"; // Using 'framer-motion' instead of 'motion/react' for standard setup
 
 const ParticlesComponent = ({ className }: { className: string }) => {
-
     const [init, setInit] = useState(false);
 
     // 1. Initialize the tsParticles engine
@@ -20,9 +19,9 @@ const ParticlesComponent = ({ className }: { className: string }) => {
         });
     }, []);
 
-    const baseColor = '#ffffff'; 
-    
-    const foregroundColor = '#1F1F1F';
+    const baseColor = "#ffffff";
+
+    const foregroundColor = "#1F1F1F";
 
     const options = useMemo(
         () => ({
@@ -37,11 +36,11 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 events: {
                     onClick: {
                         enable: true,
-                        mode: 'repulse',
+                        mode: "repulse",
                     },
                     onHover: {
                         enable: true,
-                        mode: 'grab',
+                        mode: "grab",
                     },
                 },
                 modes: {
@@ -51,9 +50,9 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                     },
                     grab: {
                         distance: 150,
-                        links: { 
-                             opacity: 0.25 // This is a high opacity value, typically 0 to 1
-                        } 
+                        links: {
+                            opacity: 0.25, // This is a high opacity value, typically 0 to 1
+                        },
                     },
                 },
             },
@@ -69,10 +68,10 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                     width: 1,
                 },
                 move: {
-                    direction: 'none' as const,
+                    direction: "none" as const,
                     enable: true,
                     outModes: {
-                        default: 'bounce' as const,
+                        default: "bounce" as const,
                     },
                     random: true,
                     speed: 1,
@@ -89,33 +88,35 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                     value: 1.0,
                 },
                 shape: {
-                    type: 'circle',
+                    type: "circle",
                 },
                 size: {
-                    value: { min: 1, max: 3 }
+                    value: { min: 1, max: 3 },
                 },
             },
             detectRetina: true,
         }),
-        []
+        [],
     );
 
     if (!init) return null;
 
     return (
         <AnimatePresence>
-
-                <motion.div
-                    key='particles'
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ type: 'spring', duration: 2 }}
-                    exit={{ opacity: 0 }}
-                    // Ensure the div covers the whole screen and is behind content
-                    className={cn('fixed inset-0 z-0 pointer-events-none', className)} 
-                >
-                    <Particles className='w-full h-full' options={options} />
-                </motion.div>
+            <motion.div
+                key="particles"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ type: "spring", duration: 2 }}
+                exit={{ opacity: 0 }}
+                // Ensure the div covers the whole screen and is behind content
+                className={cn(
+                    "fixed inset-0 z-0 pointer-events-none",
+                    className,
+                )}
+            >
+                <Particles className="w-full h-full" options={options} />
+            </motion.div>
             )
         </AnimatePresence>
     );
