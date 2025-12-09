@@ -164,13 +164,28 @@ export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProp
             <SelectItem value="red">Struggled</SelectItem>
           </SelectContent>
         </Select>
-        {(filterType !== "all" || filterConfidence !== "all") && (
+        <Select
+          value={filterDifficulty}
+          onValueChange={(v) => setFilterDifficulty(v as Difficulty | "all")}
+        >
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Difficulty" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Difficulty</SelectItem>
+            <SelectItem value="easy">Easy</SelectItem>
+            <SelectItem value="medium">Medium</SelectItem>
+            <SelectItem value="hard">Hard</SelectItem>
+          </SelectContent>
+        </Select>
+        {(filterType !== "all" || filterConfidence !== "all" || filterDifficulty !== "all") && (
           <Button
             variant="ghost"
             size="sm"
             onClick={() => {
               setFilterType("all")
               setFilterConfidence("all")
+              setFilterDifficulty("all")
             }}
           >
             Clear Filters
@@ -194,6 +209,12 @@ export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProp
                   <button onClick={() => toggleSort("type")} className="hover:text-foreground/80 transition-colors">
                     Type
                     <SortIcon field="type" />
+                  </button>
+                </th>
+                <th className="text-left p-4 font-semibold text-foreground">
+                  <button onClick={() => toggleSort("difficulty")} className="hover:text-foreground/80 transition-colors">
+                    Difficulty
+                    <SortIcon field="difficulty" />
                   </button>
                 </th>
                 <th className="text-left p-4 font-semibold text-foreground">
@@ -238,6 +259,11 @@ export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProp
                   <td className="p-4">
                     <span className="px-2 py-1 text-xs font-medium bg-muted rounded-md text-muted-foreground">
                       {problem.type}
+                    </span>
+                  </td>
+                  <td className="p-4">
+                    <span className="px-2 py-1 text-xs font-medium bg-muted rounded-md text-muted-foreground">
+                      {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
                     </span>
                   </td>
                   <td className="p-4">
