@@ -23,6 +23,12 @@ const confidenceBorders: Record<Confidence, string> = {
   red: "border-red-500/30",
 }
 
+const difficultyBorders: Record<string, string> = {
+  easy: "border-green-500/30",
+  medium: "border-yellow-500/30",
+  hard: "border-red-500/30",
+}
+
 export function LeetCodeItem({ problem, index, isAdmin, onDelete }: LeetCodeItemProps) {
   const isLeft = index % 2 === 0
 
@@ -35,7 +41,7 @@ export function LeetCodeItem({ problem, index, isAdmin, onDelete }: LeetCodeItem
       className={`relative flex items-start gap-4 mb-8 ${
         isLeft
           ? "flex-row pl-10 md:pl-0 md:flex-row md:pr-[calc(50%+24px)]"
-          : "flex-row pl-10 md:pl-0 md:flex-row-reverse md:pl-[calc(50%+24px)] md:pr-0"
+          : "flex-row pl-10 md:pl-0 md:flex-row-reverse md:pr-0"
       }`}
     >
       <div
@@ -67,6 +73,9 @@ export function LeetCodeItem({ problem, index, isAdmin, onDelete }: LeetCodeItem
             </div>
 
             <div className="flex flex-wrap gap-2 mb-3">
+              <span className={`px-2 py-1 text-xs font-medium rounded-md text-muted-foreground border ${difficultyBorders[problem.difficulty]}`}>
+                {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
+              </span>
               <span className="px-2 py-1 text-xs font-medium bg-muted rounded-md text-muted-foreground">
                 {problem.type}
               </span>
