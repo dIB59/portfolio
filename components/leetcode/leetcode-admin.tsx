@@ -56,13 +56,13 @@ export function LeetCodeAdmin({ isAdmin, setIsAdmin, onProblemAdded }: LeetCodeA
     if (!problemName.trim()) return
 
     addProblem({
-      problemName: problemName.trim(),
+      name: problemName.trim(),
       problemNumber: problemNumber ? Number.parseInt(problemNumber) : undefined,
       difficulty: problemDifficulty,
-      problemType,
+      type: problemType,
       stuckOn: stuckOn.trim() || undefined,
       confidence,
-      solvedAt,
+      solvedDate: solvedAt,
       notes: notes.trim() || undefined,
     })
 
