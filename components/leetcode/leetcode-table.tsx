@@ -88,6 +88,9 @@ export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProp
         case "type":
           comparison = a.type.localeCompare(b.type)
           break
+        case "difficulty":
+          comparison = a.difficulty.localeCompare(b.difficulty)
+          break
         case "confidence":
           const order = { green: 1, yellow: 2, red: 3 }
           comparison = order[a.confidence] - order[b.confidence]
