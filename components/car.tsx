@@ -1,253 +1,301 @@
-"use client"
+"use client";
 
-import { useRef } from "react"
-import { useFrame } from "@react-three/fiber"
-import { useKeyboardControls } from "@/hooks/use-keyboard-controls"
-import { areaDetector } from "@/lib/area-detector"
-import { WORLD_BOUNDS } from "./village"
-import * as THREE from "three"
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useKeyboardControls } from "@/hooks/use-keyboard-controls";
+import { areaDetector } from "@/lib/area-detector";
+import { WORLD_BOUNDS } from "./village";
+import * as THREE from "three";
 
 export const carState = {
-	position: new THREE.Vector3(),
-	velocity: new THREE.Vector3(),
-	direction: 0,
-	speed: 0,
-	isMoving: false,
-	isDrifting: false,
-	wheelRotation: 0,
-	driftIntensity: 0,
-}
+  position: new THREE.Vector3(),
+  velocity: new THREE.Vector3(),
+  direction: 0,
+  speed: 0,
+  isMoving: false,
+  isDrifting: false,
+  wheelRotation: 0,
+  driftIntensity: 0,
+};
 
 function Wheel({ position }: { position: [number, number, number] }) {
-	const wheelRef = useRef<THREE.Group>(null)
+  const wheelRef = useRef<THREE.Group>(null);
 
-	useFrame(() => {
-		if (wheelRef.current) {
-			wheelRef.current.rotation.x = carState.wheelRotation
-		}
-	})
+  useFrame(() => {
+    if (wheelRef.current) {
+      wheelRef.current.rotation.x = carState.wheelRotation;
+    }
+  });
 
-	return (
-		<group ref={wheelRef} position={position}>
-			<mesh rotation={[0, 0, Math.PI / 2]} castShadow>
-				<cylinderGeometry args={[0.25, 0.25, 0.15, 8]} />
-				<meshStandardMaterial color="#4a4a4a" flatShading />
-			</mesh>
-			<mesh rotation={[0, 0, Math.PI / 2]} position={[0.08, 0, 0]}>
-				<cylinderGeometry args={[0.12, 0.12, 0.02, 6]} />
-				<meshStandardMaterial color="#silver" flatShading />
-			</mesh>
-		</group>
-	)
+  return (
+    <group ref={wheelRef} position={position}>
+      <mesh rotation={[0, 0, Math.PI / 2]} castShadow>
+        <cylinderGeometry args={[0.25, 0.25, 0.15, 8]} />
+        <meshStandardMaterial color="#4a4a4a" flatShading />
+      </mesh>
+      <mesh rotation={[0, 0, Math.PI / 2]} position={[0.08, 0, 0]}>
+        <cylinderGeometry args={[0.12, 0.12, 0.02, 6]} />
+        <meshStandardMaterial color="#silver" flatShading />
+      </mesh>
+    </group>
+  );
 }
 
 export function Car() {
-	const carRef = useRef<THREE.Group>(null)
+  const carRef = useRef<THREE.Group>(null);
 
-	const velocityX = useRef(0)
-	const velocityZ = useRef(0)
-	const rotationVelocity = useRef(0)
-	const visualRotation = useRef(0)
-	const smoothCameraPos = useRef(new THREE.Vector3(40, 35, 40))
-	const smoothLookAt = useRef(new THREE.Vector3(0, 0, 0))
+  const velocityX = useRef(0);
+  const velocityZ = useRef(0);
+  const rotationVelocity = useRef(0);
+  const visualRotation = useRef(0);
+  const smoothCameraPos = useRef(new THREE.Vector3(40, 35, 40));
+  const smoothLookAt = useRef(new THREE.Vector3(0, 0, 0));
 
-	const keys = useKeyboardControls()
-	//TODO:
-	//Fix immediate breaking
+  const keys = useKeyboardControls();
+  //TODO:
+  //Fix immediate breaking
 
-	useFrame((state, delta) => {
-		if (!carRef.current) return
+  useFrame((state, delta) => {
+    if (!carRef.current) return;
 
-		const dt = Math.min(delta, 0.02)
+    const dt = Math.min(delta, 0.02);
 
-		const enginePower = 28
-		const brakePower = 1
-		const maxSpeed = 22
-		const friction = 0.96
-		const turnSpeed = 0.9
-		const driftTurnSpeed = 1.9
-		const driftFriction = 0.99
-		const gripRecovery = 2.5
-		const minSpeedToTurn = 0.5
+    const enginePower = 28;
+    const brakePower = 1;
+    const maxSpeed = 22;
+    const friction = 0.96;
+    const turnSpeed = 0.9;
+    const driftTurnSpeed = 1.9;
+    const driftFriction = 0.99;
+    const gripRecovery = 2.5;
+    const minSpeedToTurn = 0.5;
 
-		const forwardX = Math.sin(carRef.current.rotation.y)
-		const forwardZ = Math.cos(carRef.current.rotation.y)
+    const forwardX = Math.sin(carRef.current.rotation.y);
+    const forwardZ = Math.cos(carRef.current.rotation.y);
 
-		const forwardSpeed = velocityX.current * forwardX + velocityZ.current * forwardZ
-		const sidewaysSpeed = velocityX.current * forwardZ - velocityZ.current * forwardX
+    const forwardSpeed =
+      velocityX.current * forwardX + velocityZ.current * forwardZ;
+    const sidewaysSpeed =
+      velocityX.current * forwardZ - velocityZ.current * forwardX;
 
-		const isTryingToTurn = keys.left || keys.right
-		const isDrifting = keys.brake && Math.abs(forwardSpeed) > 6 && isTryingToTurn
-		const driftIntensity = Math.min(Math.abs(sidewaysSpeed) / 8, 1)
+    const isTryingToTurn = keys.left || keys.right;
+    const isDrifting =
+      keys.brake && Math.abs(forwardSpeed) > 6 && isTryingToTurn;
+    const driftIntensity = Math.min(Math.abs(sidewaysSpeed) / 8, 1);
 
+    if (keys.forward) {
+      velocityX.current += forwardX * enginePower * dt;
+      velocityZ.current += forwardZ * enginePower * dt;
+    }
+    if (keys.backward) {
+      velocityX.current -= forwardX * enginePower * 0.6 * dt;
+      velocityZ.current -= forwardZ * enginePower * 0.6 * dt;
+    }
 
-		if (keys.forward) {
-			velocityX.current += forwardX * enginePower * dt
-			velocityZ.current += forwardZ * enginePower * dt
-		}
-		if (keys.backward) {
-			velocityX.current -= forwardX * enginePower * 0.6 * dt
-			velocityZ.current -= forwardZ * enginePower * 0.6 * dt
-		}
+    const currentSpeed = Math.sqrt(
+      velocityX.current ** 2 + velocityZ.current ** 2,
+    );
 
+    if (currentSpeed > minSpeedToTurn) {
+      const steerInput = (keys.left ? 1 : 0) - (keys.right ? 1 : 0);
+      const speedFactor = Math.min(currentSpeed / 10, 1.2);
+      const direction = forwardSpeed >= 0 ? 1 : -1;
 
-		const currentSpeed = Math.sqrt(velocityX.current ** 2 + velocityZ.current ** 2)
+      const currentTurnSpeed = isDrifting ? driftTurnSpeed : turnSpeed;
+      const targetRotationVel =
+        steerInput * currentTurnSpeed * speedFactor * direction;
 
-		if (currentSpeed > minSpeedToTurn) {
-			const steerInput = (keys.left ? 1 : 0) - (keys.right ? 1 : 0)
-			const speedFactor = Math.min(currentSpeed / 10, 1.2)
-			const direction = forwardSpeed >= 0 ? 1 : -1
+      const lerpFactor = isDrifting ? 0.2 : 0.08;
+      rotationVelocity.current = THREE.MathUtils.lerp(
+        rotationVelocity.current,
+        targetRotationVel,
+        lerpFactor,
+      );
+    } else {
+      rotationVelocity.current *= 0.9;
+    }
 
-			const currentTurnSpeed = isDrifting ? driftTurnSpeed : turnSpeed
-			const targetRotationVel = steerInput * currentTurnSpeed * speedFactor * direction
+    carRef.current.rotation.y += rotationVelocity.current * dt;
 
-			const lerpFactor = isDrifting ? 0.2 : 0.08
-			rotationVelocity.current = THREE.MathUtils.lerp(rotationVelocity.current, targetRotationVel, lerpFactor)
-		} else {
-			rotationVelocity.current *= 0.9
-		}
+    const currentFriction = isDrifting ? driftFriction : friction;
 
-		carRef.current.rotation.y += rotationVelocity.current * dt
+    if (!isDrifting && !keys.brake) {
+      const targetVelX = forwardX * forwardSpeed * currentFriction;
+      const targetVelZ = forwardZ * forwardSpeed * currentFriction;
+      velocityX.current = THREE.MathUtils.lerp(
+        velocityX.current,
+        targetVelX,
+        gripRecovery * dt,
+      );
+      velocityZ.current = THREE.MathUtils.lerp(
+        velocityZ.current,
+        targetVelZ,
+        gripRecovery * dt,
+      );
+    } else {
+      velocityX.current *= currentFriction;
+      velocityZ.current *= currentFriction;
 
-		const currentFriction = isDrifting ? driftFriction : friction
+      if (isDrifting && isTryingToTurn) {
+        const kickDirection = keys.left ? -1 : 1;
+        const kickStrength = 0.15 * forwardSpeed * dt;
+        velocityX.current += forwardZ * kickDirection * kickStrength;
+        velocityZ.current -= forwardX * kickDirection * kickStrength;
+      }
+    }
 
-		if (!isDrifting && !keys.brake) {
-			const targetVelX = forwardX * forwardSpeed * currentFriction
-			const targetVelZ = forwardZ * forwardSpeed * currentFriction
-			velocityX.current = THREE.MathUtils.lerp(velocityX.current, targetVelX, gripRecovery * dt)
-			velocityZ.current = THREE.MathUtils.lerp(velocityZ.current, targetVelZ, gripRecovery * dt)
-		} else {
-			velocityX.current *= currentFriction
-			velocityZ.current *= currentFriction
+    const speed = Math.sqrt(velocityX.current ** 2 + velocityZ.current ** 2);
+    if (speed > maxSpeed) {
+      const scale = maxSpeed / speed;
+      velocityX.current *= scale;
+      velocityZ.current *= scale;
+    }
 
-			if (isDrifting && isTryingToTurn) {
-				const kickDirection = keys.left ? -1 : 1
-				const kickStrength = 0.15 * forwardSpeed * dt
-				velocityX.current += forwardZ * kickDirection * kickStrength
-				velocityZ.current -= forwardX * kickDirection * kickStrength
-			}
-		}
+    let newX = carRef.current.position.x + velocityX.current * dt;
+    let newZ = carRef.current.position.z + velocityZ.current * dt;
 
-		const speed = Math.sqrt(velocityX.current ** 2 + velocityZ.current ** 2)
-		if (speed > maxSpeed) {
-			const scale = maxSpeed / speed
-			velocityX.current *= scale
-			velocityZ.current *= scale
-		}
+    if (newX < WORLD_BOUNDS.minX) {
+      newX = WORLD_BOUNDS.minX;
+      velocityX.current *= -0.5;
+    } else if (newX > WORLD_BOUNDS.maxX) {
+      newX = WORLD_BOUNDS.maxX;
+      velocityX.current *= -0.5;
+    }
 
-		let newX = carRef.current.position.x + velocityX.current * dt
-		let newZ = carRef.current.position.z + velocityZ.current * dt
+    if (newZ < WORLD_BOUNDS.minZ) {
+      newZ = WORLD_BOUNDS.minZ;
+      velocityZ.current *= -0.5;
+    } else if (newZ > WORLD_BOUNDS.maxZ) {
+      newZ = WORLD_BOUNDS.maxZ;
+      velocityZ.current *= -0.5;
+    }
 
-		if (newX < WORLD_BOUNDS.minX) {
-			newX = WORLD_BOUNDS.minX
-			velocityX.current *= -0.5
-		} else if (newX > WORLD_BOUNDS.maxX) {
-			newX = WORLD_BOUNDS.maxX
-			velocityX.current *= -0.5
-		}
+    carRef.current.position.x = newX;
+    carRef.current.position.z = newZ;
 
-		if (newZ < WORLD_BOUNDS.minZ) {
-			newZ = WORLD_BOUNDS.minZ
-			velocityZ.current *= -0.5
-		} else if (newZ > WORLD_BOUNDS.maxZ) {
-			newZ = WORLD_BOUNDS.maxZ
-			velocityZ.current *= -0.5
-		}
+    const targetTilt = isDrifting
+      ? -rotationVelocity.current * 0.25
+      : -rotationVelocity.current * 0.05;
+    visualRotation.current = THREE.MathUtils.lerp(
+      visualRotation.current,
+      targetTilt,
+      8 * dt,
+    );
+    carRef.current.rotation.z = visualRotation.current;
 
-		carRef.current.position.x = newX
-		carRef.current.position.z = newZ
+    carState.wheelRotation += forwardSpeed * dt * 3;
 
-		const targetTilt = isDrifting ? -rotationVelocity.current * 0.25 : -rotationVelocity.current * 0.05
-		visualRotation.current = THREE.MathUtils.lerp(visualRotation.current, targetTilt, 8 * dt)
-		carRef.current.rotation.z = visualRotation.current
+    carState.position.copy(carRef.current.position);
+    carState.velocity.set(velocityX.current, 0, velocityZ.current);
+    carState.direction = carRef.current.rotation.y;
+    carState.speed = forwardSpeed;
+    carState.isMoving = currentSpeed > 0.5;
+    carState.isDrifting = isDrifting;
+    carState.driftIntensity = isDrifting
+      ? Math.max(driftIntensity, 0.5)
+      : driftIntensity;
 
-		carState.wheelRotation += forwardSpeed * dt * 3
+    areaDetector.update(carState.position);
 
-		carState.position.copy(carRef.current.position)
-		carState.velocity.set(velocityX.current, 0, velocityZ.current)
-		carState.direction = carRef.current.rotation.y
-		carState.speed = forwardSpeed
-		carState.isMoving = currentSpeed > 0.5
-		carState.isDrifting = isDrifting
-		carState.driftIntensity = isDrifting ? Math.max(driftIntensity, 0.5) : driftIntensity
+    const cameraDistance = 30;
+    const cameraHeight = 35;
 
-		areaDetector.update(carState.position)
+    const targetCameraPos = new THREE.Vector3(
+      carRef.current.position.x + cameraDistance * 0.7,
+      cameraHeight,
+      carRef.current.position.z + cameraDistance * 0.7,
+    );
 
-		const cameraDistance = 30
-		const cameraHeight = 35
+    const lookAtPos = new THREE.Vector3(
+      carRef.current.position.x,
+      0,
+      carRef.current.position.z,
+    );
 
-		const targetCameraPos = new THREE.Vector3(
-			carRef.current.position.x + cameraDistance * 0.7,
-			cameraHeight,
-			carRef.current.position.z + cameraDistance * 0.7,
-		)
+    smoothCameraPos.current.lerp(targetCameraPos, 0.02);
+    smoothLookAt.current.lerp(lookAtPos, 0.04);
 
-		const lookAtPos = new THREE.Vector3(carRef.current.position.x, 0, carRef.current.position.z)
+    state.camera.position.copy(smoothCameraPos.current);
+    state.camera.lookAt(smoothLookAt.current);
+  });
 
-		smoothCameraPos.current.lerp(targetCameraPos, 0.02)
-		smoothLookAt.current.lerp(lookAtPos, 0.04)
+  return (
+    <group ref={carRef} position={[0, 0.25, 0]}>
+      {/* Car body */}
+      <mesh position={[0, 0.2, 0]} castShadow>
+        <boxGeometry args={[1.2, 0.4, 2.2]} />
+        <meshStandardMaterial color="#f8b4c4" flatShading />
+      </mesh>
 
-		state.camera.position.copy(smoothCameraPos.current)
-		state.camera.lookAt(smoothLookAt.current)
-	})
+      {/* Cabin */}
+      <mesh position={[0, 0.55, -0.1]} castShadow>
+        <boxGeometry args={[1, 0.35, 1.2]} />
+        <meshStandardMaterial color="#c9e4f8" flatShading />
+      </mesh>
 
-	return (
-		<group ref={carRef} position={[0, 0.25, 0]}>
-			{/* Car body */}
-			<mesh position={[0, 0.2, 0]} castShadow>
-				<boxGeometry args={[1.2, 0.4, 2.2]} />
-				<meshStandardMaterial color="#f8b4c4" flatShading />
-			</mesh>
+      {/* Roof */}
+      <mesh position={[0, 0.8, -0.1]} castShadow>
+        <boxGeometry args={[0.9, 0.1, 1]} />
+        <meshStandardMaterial color="#f8b4c4" flatShading />
+      </mesh>
 
-			{/* Cabin */}
-			<mesh position={[0, 0.55, -0.1]} castShadow>
-				<boxGeometry args={[1, 0.35, 1.2]} />
-				<meshStandardMaterial color="#c9e4f8" flatShading />
-			</mesh>
+      {/* Front bumper */}
+      <mesh position={[0, 0.1, 1.15]} castShadow>
+        <boxGeometry args={[1.1, 0.2, 0.15]} />
+        <meshStandardMaterial color="#e8a5b8" flatShading />
+      </mesh>
 
-			{/* Roof */}
-			<mesh position={[0, 0.8, -0.1]} castShadow>
-				<boxGeometry args={[0.9, 0.1, 1]} />
-				<meshStandardMaterial color="#f8b4c4" flatShading />
-			</mesh>
+      {/* Rear bumper */}
+      <mesh position={[0, 0.1, -1.15]} castShadow>
+        <boxGeometry args={[1.1, 0.2, 0.15]} />
+        <meshStandardMaterial color="#e8a5b8" flatShading />
+      </mesh>
 
-			{/* Front bumper */}
-			<mesh position={[0, 0.1, 1.15]} castShadow>
-				<boxGeometry args={[1.1, 0.2, 0.15]} />
-				<meshStandardMaterial color="#e8a5b8" flatShading />
-			</mesh>
+      {/* Headlights */}
+      <mesh position={[0.4, 0.25, 1.12]}>
+        <boxGeometry args={[0.2, 0.15, 0.05]} />
+        <meshStandardMaterial
+          color="#ffffd4"
+          emissive="#ffffd4"
+          emissiveIntensity={0.5}
+          flatShading
+        />
+      </mesh>
+      <mesh position={[-0.4, 0.25, 1.12]}>
+        <boxGeometry args={[0.2, 0.15, 0.05]} />
+        <meshStandardMaterial
+          color="#ffffd4"
+          emissive="#ffffd4"
+          emissiveIntensity={0.5}
+          flatShading
+        />
+      </mesh>
 
-			{/* Rear bumper */}
-			<mesh position={[0, 0.1, -1.15]} castShadow>
-				<boxGeometry args={[1.1, 0.2, 0.15]} />
-				<meshStandardMaterial color="#e8a5b8" flatShading />
-			</mesh>
+      {/* Tail lights */}
+      <mesh position={[0.4, 0.25, -1.12]}>
+        <boxGeometry args={[0.2, 0.1, 0.05]} />
+        <meshStandardMaterial
+          color="#ff6b6b"
+          emissive="#ff6b6b"
+          emissiveIntensity={0.3}
+          flatShading
+        />
+      </mesh>
+      <mesh position={[-0.4, 0.25, -1.12]}>
+        <boxGeometry args={[0.2, 0.1, 0.05]} />
+        <meshStandardMaterial
+          color="#ff6b6b"
+          emissive="#ff6b6b"
+          emissiveIntensity={0.3}
+          flatShading
+        />
+      </mesh>
 
-			{/* Headlights */}
-			<mesh position={[0.4, 0.25, 1.12]}>
-				<boxGeometry args={[0.2, 0.15, 0.05]} />
-				<meshStandardMaterial color="#ffffd4" emissive="#ffffd4" emissiveIntensity={0.5} flatShading />
-			</mesh>
-			<mesh position={[-0.4, 0.25, 1.12]}>
-				<boxGeometry args={[0.2, 0.15, 0.05]} />
-				<meshStandardMaterial color="#ffffd4" emissive="#ffffd4" emissiveIntensity={0.5} flatShading />
-			</mesh>
-
-			{/* Tail lights */}
-			<mesh position={[0.4, 0.25, -1.12]}>
-				<boxGeometry args={[0.2, 0.1, 0.05]} />
-				<meshStandardMaterial color="#ff6b6b" emissive="#ff6b6b" emissiveIntensity={0.3} flatShading />
-			</mesh>
-			<mesh position={[-0.4, 0.25, -1.12]}>
-				<boxGeometry args={[0.2, 0.1, 0.05]} />
-				<meshStandardMaterial color="#ff6b6b" emissive="#ff6b6b" emissiveIntensity={0.3} flatShading />
-			</mesh>
-
-			{/* Wheels */}
-			<Wheel position={[0.65, 0, 0.7]} />
-			<Wheel position={[-0.65, 0, 0.7]} />
-			<Wheel position={[0.65, 0, -0.7]} />
-			<Wheel position={[-0.65, 0, -0.7]} />
-		</group>
-	)
+      {/* Wheels */}
+      <Wheel position={[0.65, 0, 0.7]} />
+      <Wheel position={[-0.65, 0, 0.7]} />
+      <Wheel position={[0.65, 0, -0.7]} />
+      <Wheel position={[-0.65, 0, -0.7]} />
+    </group>
+  );
 }
