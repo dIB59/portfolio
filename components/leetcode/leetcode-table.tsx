@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
-import type { LeetCodeProblem, Confidence, ProblemType } from "@/lib/leetcode-types"
+import type { LeetCodeProblem, Confidence, ProblemType, Difficulty } from "@/lib/leetcode-types"
 import { PROBLEM_TYPES } from "@/lib/leetcode-types"
 import { Trash2, ChevronUp, ChevronDown, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
