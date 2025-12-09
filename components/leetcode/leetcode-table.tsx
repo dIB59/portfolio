@@ -26,7 +26,7 @@ const confidenceLabels: Record<Confidence, string> = {
   red: "Struggled",
 }
 
-type SortField = "date" | "name" | "type" | "confidence"
+type SortField = "date" | "name" | "type" | "confidence" | "difficulty"
 type SortDirection = "asc" | "desc"
 
 export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProps) {
