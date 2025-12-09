@@ -101,7 +101,7 @@ export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProp
     })
 
     return filtered
-  }, [problems, sortField, sortDirection, filterType, filterConfidence])
+  }, [problems, sortField, sortDirection, filterType, filterConfidence, filterDifficulty])
 
   const stats = useMemo(() => {
     return {
