@@ -21,11 +21,13 @@ export type ProblemType =
   | "Other"
 
 export type Confidence = "red" | "yellow" | "green"
+export type Difficulty = "easy" | "medium" | "hard"
 
 export interface LeetCodeProblem {
   id: string
   name: string
   problemNumber?: number
+  difficulty: Difficulty
   type: string
   stuckOn?: string
   confidence: Confidence

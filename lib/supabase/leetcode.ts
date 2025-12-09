@@ -1,5 +1,5 @@
 import { createClient } from "./client"
-import type { LeetCodeProblem } from "../leetcode-types"
+import type { Difficulty, LeetCodeProblem } from "../leetcode-types"
 
 export async function getLeetCodeProblems(): Promise<LeetCodeProblem[]> {
   const supabase = createClient()
@@ -13,10 +13,11 @@ export async function getLeetCodeProblems(): Promise<LeetCodeProblem[]> {
     return []
   }
 
-  return data.map((p) => ({
+  return data.map((p : any) => ({
     id: p.id,
     name: p.name,
     problemNumber: p.problem_number || undefined,
+    difficulty: p.difficulty,
     type: p.problem_type,
     confidence: p.confidence as "green" | "yellow" | "red",
     stuckOn: p.stuck_on || undefined,
@@ -33,6 +34,7 @@ export async function addLeetCodeProblem(problem: Omit<LeetCodeProblem, "id">): 
     .insert({
       name: problem.name,
       problem_number: problem.problemNumber || null,
+      difficulty: problem.difficulty,
       problem_type: problem.type,
       confidence: problem.confidence,
       stuck_on: problem.stuckOn || null,
@@ -51,6 +53,7 @@ export async function addLeetCodeProblem(problem: Omit<LeetCodeProblem, "id">): 
   return {
     id: data.id,
     name: data.name,
+    difficulty: data.difficulty as Difficulty,
     problemNumber: data.problem_number || undefined,
     type: data.problem_type,
     confidence: data.confidence as "green" | "yellow" | "red",
@@ -68,6 +71,7 @@ export async function updateLeetCodeProblem(id: string, problem: Partial<LeetCod
     .update({
       name: problem.name,
       problem_number: problem.problemNumber || null,
+      difficulty: problem.difficulty,
       problem_type: problem.type,
       confidence: problem.confidence,
       stuck_on: problem.stuckOn || null,
