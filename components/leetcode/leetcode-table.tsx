@@ -34,6 +34,7 @@ export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProp
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [filterType, setFilterType] = useState<ProblemType | "all">("all")
   const [filterConfidence, setFilterConfidence] = useState<Confidence | "all">("all")
+  const [filterDifficulty, setFilterDifficulty] = useState<Difficulty | "all">("all")
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this problem?")) {
