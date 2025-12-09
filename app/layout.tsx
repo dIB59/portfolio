@@ -38,7 +38,6 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`font-sans antialiased`}>
         {children}
-        <Analytics />
       </body>
     </html>
   )
