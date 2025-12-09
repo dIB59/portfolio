@@ -71,6 +71,10 @@ export function LeetCodeTable({ problems, isAdmin, onDelete }: LeetCodeTableProp
       filtered = filtered.filter((p) => p.confidence === filterConfidence)
     }
 
+    if (filterDifficulty !== "all") {
+      filtered = filtered.filter((p) => p.difficulty === filterDifficulty)
+    }
+
     filtered.sort((a, b) => {
       let comparison = 0
 
