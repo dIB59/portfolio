@@ -1,5 +1,5 @@
 import ParticlesComponent from "@/components/three-background";
-import { LeetCodeSection } from "@/components/leetcode/leetcode-section";
+import { LeetCodeSection } from "@/features/leetcode/components/leetcode-section";
 
 export default function LeetCodePage() {
     return (
