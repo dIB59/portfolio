@@ -14,9 +14,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { ProjectsAdmin } from "@/components/admin/projects-admin";
-import { LeetCodeAdminPanel } from "@/components/admin/leetcode-admin-panel";
+import { LeetCodeAdminPanel } from "@/features/leetcode/components/leetcode-admin-panel";
 import { ProjectUpdatesAdmin } from "@/components/admin/project-updates-admin";
-import { ThreeBackground } from "@/components/three-background";
+import ThreeBackground from "@/components/three-background";
 
 interface AdminDashboardProps {
     userEmail: string;
