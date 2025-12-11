@@ -1,5 +1,3 @@
-import { m } from "framer-motion";
-
 export function TimelineSkeleton() {
     return (
         <section className="py-20 px-6">

@@ -1,21 +1,8 @@
 "use client";
 
-import type React from "react";
-import { useState, useEffect } from "react";
-import { m, AnimatePresence } from "framer-motion";
-import {
-    Plus,
-    Trash2,
-    Edit2,
-    X,
-    ChevronUp,
-    Loader2,
-    RefreshCw,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
     Select,
     SelectContent,
@@ -23,14 +10,27 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import type { Project, ProjectUpdate } from "@/lib/projects-data";
-import { getProjects } from "@/lib/supabase/projects";
 import {
-    getProjectUpdates,
     addProjectUpdate,
-    updateProjectUpdate,
     deleteProjectUpdate,
+    getProjectUpdates,
+    updateProjectUpdate,
 } from "@/lib/supabase/project-updates";
+import { getProjects } from "@/lib/supabase/projects";
+import { AnimatePresence, m } from "framer-motion";
+import {
+    ChevronUp,
+    Edit2,
+    Loader2,
+    Plus,
+    RefreshCw,
+    Trash2,
+    X,
+} from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 const MONTHS = [
     "January",

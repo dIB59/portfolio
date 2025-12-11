@@ -24,7 +24,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { PROBLEM_TYPES, type ProblemType, type Difficulty, type LeetCodeProblem } from "@/lib/types/leetcode";
+import { PROBLEM_TYPES, type LeetCodeProblem } from "@/lib/types/leetcode";
 import {
     getLeetCodeProblems,
     updateLeetCodeProblem,

@@ -1,8 +1,6 @@
 "use client";
 
 import { m } from "framer-motion";
-import { CheckCircle2, AlertCircle, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { LeetCodeProblem, Confidence } from "@/lib/types/leetcode";
 import { Trash2 } from "lucide-react";
 

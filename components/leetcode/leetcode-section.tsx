@@ -8,8 +8,6 @@ import type { LeetCodeProblem } from "@/lib/types/leetcode";
 import { getLeetCodeProblems } from "@/lib/supabase/leetcode";
 import { LeetCodeItem } from "./leetcode-item";
 import { LeetCodeTable } from "./leetcode-table";
-import { LeetCodeAdminPanel } from "./leetcode-admin-panel";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 
 // --- 1. Sub-component for the Timeline Logic ---
