@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "@/app/globals.css";
 import { MotionProvider } from "@/components/motion-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -39,6 +40,7 @@ export default function RootLayout({
         <html lang="en" className="scroll-smooth">
             <body className={`font-sans antialiased`}>
                 <MotionProvider>{children}</MotionProvider>
+                <Toaster />
             </body>
         </html>
     );
