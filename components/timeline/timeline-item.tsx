@@ -32,7 +32,7 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
                     className="absolute left-[19px] md:left-1/2 top-6 w-4 h-4 rounded-full bg-foreground border-2 border-background z-10 -translate-x-1/2"
                 />
 
-                {/* Year label */}
+                {/* Month and year label */}
                 <div
                     className={`hidden md:block w-1/2 ${isLeft ? "text-right pr-12" : "text-left pl-12"}`}
                 >
@@ -41,9 +41,9 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.4, delay: 0.4 }}
                         viewport={{ once: true }}
-                        className="text-5xl font-bold text-foreground/10"
+                        className="text-4xl font-bold text-foreground"
                     >
-                        {project.year}
+                        {project.month ? `${project.month.substring(0, 3)} ` : ""}{project.year}
                     </motion.span>
                 </div>
 
