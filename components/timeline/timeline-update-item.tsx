@@ -31,7 +31,7 @@ export function TimelineUpdateItem({
                 className="absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full bg-primary/50 border-2 border-primary z-10 -translate-x-1/2"
             />
 
-            {/* Year label */}
+            {/* Month and year label */}
             <div
                 className={`hidden md:block w-1/2 ${isLeft ? "text-right pr-12" : "text-left pl-12"}`}
             >
@@ -40,9 +40,9 @@ export function TimelineUpdateItem({
                     whileInView={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.4 }}
                     viewport={{ once: true }}
-                    className="text-3xl font-bold text-foreground/10"
+                    className="text-4xl font-bold text-foreground"
                 >
-                    {update.year}
+                    {update.month ? `${update.month.substring(0, 3)} ` : ""}{update.year}
                 </motion.span>
             </div>
 
@@ -62,10 +62,6 @@ export function TimelineUpdateItem({
                             <div className="flex items-center gap-2 flex-wrap mb-1">
                                 <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">
                                     Update
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                    {update.month ? `${update.month} ` : ""}
-                                    {update.year}
                                 </span>
                             </div>
                             <h4 className="font-semibold text-foreground mb-1">
