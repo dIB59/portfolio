@@ -7,6 +7,7 @@ import { TimelineSkeleton } from "@/components/timeline/timeline-skeleton";
 import { Analytics } from "@vercel/analytics/next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { ContactForm } from "@/components/contact/contact-form";
 
 // Lazy load particles (client-side component)
 const ParticlesComponent = dynamic(() => import("@/components/three-background"), {
@@ -79,6 +80,8 @@ export default function PortfolioPage() {
                 <Suspense fallback={<TimelineSkeleton />}>
                     <TimelineData />
                 </Suspense>
+
+                <ContactForm />
             </div>
             <Analytics />
         </main>
