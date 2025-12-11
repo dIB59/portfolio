@@ -4,6 +4,7 @@ import { getProjectUpdates } from "@/lib/supabase/project-updates";
 import type { TimelineEntry } from "@/lib/projects-data";
 import { Timeline } from "@/components/timeline/timeline";
 import ParticlesComponent from "@/components/three-background";
+import { Analytics } from "@vercel/analytics/next";
 
 export default async function PortfolioPage() {
     // 1. Fetch data on the server (in parallel)
@@ -61,6 +62,7 @@ export default async function PortfolioPage() {
                 {/* 3. Pass data down as props */}
                 <Timeline initialEntries={timelineEntries} />
             </div>
+            <Analytics />
         </main>
     );
 }
