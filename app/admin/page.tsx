@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { AdminDashboard } from "@/components/admin/admin-dashboard";
+import dynamic from "next/dynamic";
+
+// Lazy load admin dashboard (heavy component with animations)
+const AdminDashboard = dynamic(
+    () => import("@/components/admin/admin-dashboard").then((mod) => ({ default: mod.AdminDashboard }))
+);
 
 export default async function AdminPage() {
     const supabase = await createClient();

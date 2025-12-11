@@ -3,8 +3,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ProjectCard } from "./project-card";
-import { ProjectModal } from "./project-modal";
 import type { Project } from "@/lib/projects-data";
+import dynamic from "next/dynamic";
+
+// Lazy load modal (only loads when first opened)
+const ProjectModal = dynamic(
+    () => import("./project-modal").then((mod) => ({ default: mod.ProjectModal })),
+    { ssr: false }
+);
 
 interface TimelineItemProps {
     project: Project;

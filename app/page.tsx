@@ -3,8 +3,13 @@ import { getProjects } from "@/lib/supabase/projects";
 import { getProjectUpdates } from "@/lib/supabase/project-updates";
 import type { TimelineEntry } from "@/lib/projects-data";
 import { Timeline } from "@/components/timeline/timeline";
-import ParticlesComponent from "@/components/three-background";
 import { Analytics } from "@vercel/analytics/next";
+import dynamic from "next/dynamic";
+
+// Lazy load particles (client-side component)
+const ParticlesComponent = dynamic(() => import("@/components/three-background"), {
+    loading: () => null,
+});
 
 export default async function PortfolioPage() {
     // 1. Fetch data on the server (in parallel)

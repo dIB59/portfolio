@@ -18,7 +18,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { LeetCodeProblemModal } from "./leetcode-problem-modal";
+import dynamic from "next/dynamic";
+
+// Lazy load modal (only loads when first opened)
+const LeetCodeProblemModal = dynamic(
+    () => import("./leetcode-problem-modal").then((mod) => ({ default: mod.LeetCodeProblemModal })),
+    { ssr: false }
+);
 
 interface LeetCodeTableProps {
     problems: LeetCodeProblem[];
