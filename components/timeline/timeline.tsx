@@ -33,6 +33,43 @@ export function Timeline({ initialEntries }: TimelineProps) {
         );
     }
 
+    // Group entries by year and month
+    const groupedByMonth: Record<string, TimelineEntry[]> = {};
+
+    initialEntries.forEach((entry) => {
+        const monthKey = entry.month
+            ? `${entry.year}-${entry.month}`
+            : `${entry.year}-Unknown`;
+
+        if (!groupedByMonth[monthKey]) {
+            groupedByMonth[monthKey] = [];
+        }
+        groupedByMonth[monthKey].push(entry);
+    });
+
+    // Sort month keys in reverse chronological order
+    const sortedMonths = Object.keys(groupedByMonth).sort((a, b) => {
+        const [yearA, monthA] = a.split("-");
+        const [yearB, monthB] = b.split("-");
+
+        // Compare years first
+        if (parseInt(yearB) !== parseInt(yearA)) {
+            return parseInt(yearB) - parseInt(yearA);
+        }
+
+        // If years are equal, compare months
+        const monthOrder: Record<string, number> = {
+            January: 1, February: 2, March: 3, April: 4,
+            May: 5, June: 6, July: 7, August: 8,
+            September: 9, October: 10, November: 11, December: 12,
+            Unknown: 0
+        };
+
+        return (monthOrder[monthB] || 0) - (monthOrder[monthA] || 0);
+    });
+
+    let globalIndex = 0;
+
     return (
         <section id="timeline" className="py-20 px-6" ref={containerRef}>
             <motion.div
@@ -40,7 +77,7 @@ export function Timeline({ initialEntries }: TimelineProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="text-center mb-20"
+                className="text-center mb-20 relative z-20"
             >
                 <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
                     Career Journey
@@ -50,7 +87,6 @@ export function Timeline({ initialEntries }: TimelineProps) {
                 </p>
             </motion.div>
 
-            {/* Since there is no loading state, this ref is ALWAYS rendered immediately */}
             <div className="relative max-w-4xl mx-auto" ref={timelineRef}>
                 <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-0.5 bg-border md:-translate-x-1/2" />
 
@@ -61,28 +97,44 @@ export function Timeline({ initialEntries }: TimelineProps) {
 
                 <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-foreground md:-translate-x-1/2 -translate-y-1/2 z-10" />
 
-                <div className="space-y-12 md:space-y-16">
-                    {initialEntries.map((entry, index) =>
-                        entry.type === "project" ? (
-                            <TimelineItem
-                                key={`project-${entry.id}`}
-                                project={entry.data as Project}
-                                index={index}
-                                isLeft={index % 2 === 0}
-                            />
-                        ) : (
-                            <TimelineUpdateItem
-                                key={`update-${entry.id}`}
-                                update={entry.data as ProjectUpdate}
-                                index={index}
-                                isLeft={index % 2 === 0}
-                            />
-                        ),
-                    )}
-                </div>
+                {sortedMonths.map((monthKey, monthIdx) => {
+                    const [year, month] = monthKey.split("-");
+                    const monthName = month !== "Unknown"
+                        ? `${month} ${year}`
+                        : year;
+
+                    return (
+                        <div key={monthKey} className="mb-12">
+                            {/* Entries for this month */}
+                            <div className="space-y-8">
+                                {groupedByMonth[monthKey].map((entry) => {
+                                    const currentIndex = globalIndex++;
+                                    const isLeft = currentIndex % 2 === 0;
+
+                                    return entry.type === "project" ? (
+                                        <TimelineItem
+                                            key={`project-${entry.id}`}
+                                            project={entry.data as Project}
+                                            index={currentIndex}
+                                            isLeft={isLeft}
+                                        />
+                                    ) : (
+                                        <TimelineUpdateItem
+                                            key={`update-${entry.id}`}
+                                            update={entry.data as ProjectUpdate}
+                                            index={currentIndex}
+                                            isLeft={isLeft}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
 
                 <div className="absolute left-[19px] md:left-1/2 bottom-0 w-3 h-3 rounded-full bg-border md:-translate-x-1/2 translate-y-1/2" />
             </div>
         </section>
     );
 }
+
