@@ -35,8 +35,9 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
+                        className="fixed inset-0 bg-background/90 z-50"
                     />
 
                     {/* Modal */}
@@ -45,9 +46,8 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{
-                            type: "spring",
-                            damping: 25,
-                            stiffness: 300,
+                            duration: 0.3,
+                            ease: "easeOut",
                         }}
                         className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full md:max-h-[85vh] bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col"
                     >
@@ -72,10 +72,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                         {/* Content */}
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
                             {project.image && (
-                                <m.div
-                                    layoutId={`image-${project.id}`}
-                                    className="relative overflow-hidden rounded-xl aspect-video bg-muted"
-                                >
+                                <div className="relative overflow-hidden rounded-xl aspect-video bg-muted">
                                     <img
                                         src={
                                             project.image || "/placeholder.svg"
@@ -83,7 +80,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                                         alt={project.title}
                                         className="w-full h-full object-cover"
                                     />
-                                </m.div>
+                                </div>
                             )}
 
                             <div className="space-y-4">
@@ -105,24 +102,13 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                                         <ul className="space-y-2">
                                             {project.achievements.map(
                                                 (achievement, i) => (
-                                                    <m.li
+                                                    <li
                                                         key={i}
-                                                        initial={{
-                                                            opacity: 0,
-                                                            x: -10,
-                                                        }}
-                                                        animate={{
-                                                            opacity: 1,
-                                                            x: 0,
-                                                        }}
-                                                        transition={{
-                                                            delay: i * 0.1,
-                                                        }}
                                                         className="flex items-start gap-2 text-muted-foreground"
                                                     >
                                                         <span className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 shrink-0" />
                                                         {achievement}
-                                                    </m.li>
+                                                    </li>
                                                 ),
                                             )}
                                         </ul>

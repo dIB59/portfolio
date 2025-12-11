@@ -39,7 +39,7 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
         offset: ["start 20%", "end 95%"],
     });
 
-    const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+    const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
     // Memoize expensive grouping and sorting computation
     const memoizedTimelineData = useMemo(() => {
@@ -101,8 +101,8 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
                 <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-0.5 bg-border md:-translate-x-1/2" />
 
                 <m.div
-                    className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-foreground md:-translate-x-1/2"
-                    style={{ height: lineHeight }}
+                    className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-foreground md:-translate-x-1/2 origin-top"
+                    style={{ scaleY, height: "100%" }}
                 />
 
                 <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-foreground md:-translate-x-1/2 -translate-y-1/2 z-10" />

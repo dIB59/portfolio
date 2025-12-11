@@ -31,7 +31,7 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 },
                 opacity: 1,
             },
-            fpsLimit: 120,
+            fpsLimit: 60, // Limit FPS to save battery/CPU on mobile
             interactivity: {
                 events: {
                     onClick: {
@@ -41,17 +41,22 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                     onHover: {
                         enable: true,
                         mode: "grab",
+                        parallax: {
+                            enable: false,
+                            force: 60,
+                            smooth: 10,
+                        },
                     },
                 },
                 modes: {
                     repulse: {
                         distance: 200,
-                        duration: 0.5,
+                        duration: 0.4,
                     },
                     grab: {
                         distance: 150,
                         links: {
-                            opacity: 0.25, // This is a high opacity value, typically 0 to 1
+                            opacity: 0.25,
                         },
                     },
                 },
@@ -62,9 +67,9 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 },
                 links: {
                     color: foregroundColor,
-                    enable: true, // Enable links for the 'grab' interaction to work visually
+                    enable: true,
                     distance: 150,
-                    opacity: 0.15, // Set a low opacity for subtle connections
+                    opacity: 0.15,
                     width: 1,
                 },
                 move: {
@@ -80,9 +85,9 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 number: {
                     density: {
                         enable: true,
-                        value_area: 1200, // Adjusted density area for fewer, spread-out particles
+                        value_area: 800,
                     },
-                    value: 100, // Adjusted particle count
+                    value: 40, // Reduced base value
                 },
                 opacity: {
                     value: 1.0,
@@ -95,6 +100,29 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 },
             },
             detectRetina: true,
+            // Responsive overrides
+            responsive: [
+                {
+                    maxWidth: 768,
+                    options: {
+                        particles: {
+                            number: {
+                                value: 25, // Much fewer particles on mobile
+                            },
+                            links: {
+                                enable: false, // Disable links on mobile for performance
+                            },
+                        },
+                        interactivity: {
+                            events: {
+                                onHover: {
+                                    enable: false, // Disable hover on mobile
+                                },
+                            },
+                        },
+                    },
+                },
+            ],
         }),
         [],
     );
