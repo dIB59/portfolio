@@ -3,16 +3,13 @@
 import { m } from "framer-motion";
 import Link from "next/link";
 import { Settings } from "lucide-react";
+import { memo } from "react";
 
-export function Hero() {
+export const Hero = memo(function Hero() {
     return (
         <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative">
-            <m.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 0.5 }}
-                className="absolute top-6 right-6"
-            >
+            {/* Admin button - no animation, saves processing */}
+            <div className="absolute top-6 right-6 opacity-0 animate-fade-in">
                 <Link
                     href="/admin"
                     className="p-2 rounded-full transition-colors text-muted-foreground hover:text-foreground"
@@ -20,7 +17,7 @@ export function Hero() {
                 >
                     <Settings className="w-5 h-5" />
                 </Link>
-            </m.div>
+            </div>
 
             <m.div
                 initial={{ opacity: 0, y: 30 }}
@@ -79,7 +76,7 @@ export function Hero() {
                 <m.div
                     animate={{ y: [0, 10, 0] }}
                     transition={{
-                        repeat: Number.POSITIVE_INFINITY,
+                        repeat: Infinity,
                         duration: 2,
                         ease: "easeInOut",
                     }}
@@ -90,4 +87,4 @@ export function Hero() {
             </m.div>
         </section>
     );
-}
+});

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo, memo } from "react";
 import { m, useScroll, useTransform } from "framer-motion";
 import { TimelineItem } from "./timeline-item";
 import { TimelineUpdateItem } from "./timeline-update-item";
@@ -14,7 +14,23 @@ interface TimelineProps {
     initialEntries: TimelineEntry[];
 }
 
-export function Timeline({ initialEntries }: TimelineProps) {
+const monthOrder: Record<string, number> = {
+    January: 1,
+    February: 2,
+    March: 3,
+    April: 4,
+    May: 5,
+    June: 6,
+    July: 7,
+    August: 8,
+    September: 9,
+    October: 10,
+    November: 11,
+    December: 12,
+    Unknown: 0,
+};
+
+export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const timelineRef = useRef<HTMLDivElement>(null);
 
@@ -25,6 +41,35 @@ export function Timeline({ initialEntries }: TimelineProps) {
 
     const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
+    // Memoize expensive grouping and sorting computation
+    const memoizedTimelineData = useMemo(() => {
+        const groupedByMonth: Record<string, TimelineEntry[]> = {};
+
+        initialEntries.forEach((entry) => {
+            const monthKey = entry.month
+                ? `${entry.year}-${entry.month}`
+                : `${entry.year}-Unknown`;
+
+            if (!groupedByMonth[monthKey]) {
+                groupedByMonth[monthKey] = [];
+            }
+            groupedByMonth[monthKey].push(entry);
+        });
+
+        const sortedKeys = Object.keys(groupedByMonth).sort((a, b) => {
+            const [yearA, monthA] = a.split("-");
+            const [yearB, monthB] = b.split("-");
+
+            if (parseInt(yearB) !== parseInt(yearA)) {
+                return parseInt(yearB) - parseInt(yearA);
+            }
+
+            return (monthOrder[monthB] || 0) - (monthOrder[monthA] || 0);
+        });
+
+        return { groupedByMonth, sortedKeys };
+    }, [initialEntries]);
+
     if (initialEntries.length === 0) {
         return (
             <section className="py-20 px-6 text-center text-muted-foreground">
@@ -32,41 +77,6 @@ export function Timeline({ initialEntries }: TimelineProps) {
             </section>
         );
     }
-
-    // Group entries by year and month
-    const groupedByMonth: Record<string, TimelineEntry[]> = {};
-
-    initialEntries.forEach((entry) => {
-        const monthKey = entry.month
-            ? `${entry.year}-${entry.month}`
-            : `${entry.year}-Unknown`;
-
-        if (!groupedByMonth[monthKey]) {
-            groupedByMonth[monthKey] = [];
-        }
-        groupedByMonth[monthKey].push(entry);
-    });
-
-    // Sort month keys in reverse chronological order
-    const sortedMonths = Object.keys(groupedByMonth).sort((a, b) => {
-        const [yearA, monthA] = a.split("-");
-        const [yearB, monthB] = b.split("-");
-
-        // Compare years first
-        if (parseInt(yearB) !== parseInt(yearA)) {
-            return parseInt(yearB) - parseInt(yearA);
-        }
-
-        // If years are equal, compare months
-        const monthOrder: Record<string, number> = {
-            January: 1, February: 2, March: 3, April: 4,
-            May: 5, June: 6, July: 7, August: 8,
-            September: 9, October: 10, November: 11, December: 12,
-            Unknown: 0
-        };
-
-        return (monthOrder[monthB] || 0) - (monthOrder[monthA] || 0);
-    });
 
     let globalIndex = 0;
 
@@ -97,7 +107,7 @@ export function Timeline({ initialEntries }: TimelineProps) {
 
                 <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-foreground md:-translate-x-1/2 -translate-y-1/2 z-10" />
 
-                {sortedMonths.map((monthKey, monthIdx) => {
+                {memoizedTimelineData.sortedKeys.map((monthKey, monthIdx) => {
                     const [year, month] = monthKey.split("-");
                     const monthName = month !== "Unknown"
                         ? `${month} ${year}`
@@ -107,7 +117,7 @@ export function Timeline({ initialEntries }: TimelineProps) {
                         <div key={monthKey} className="mb-12">
                             {/* Entries for this month */}
                             <div className="space-y-8">
-                                {groupedByMonth[monthKey].map((entry) => {
+                                {memoizedTimelineData.groupedByMonth[monthKey].map((entry) => {
                                     const currentIndex = globalIndex++;
                                     const isLeft = currentIndex % 2 === 0;
 
@@ -136,5 +146,4 @@ export function Timeline({ initialEntries }: TimelineProps) {
             </div>
         </section>
     );
-}
-
+});
