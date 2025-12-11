@@ -2,14 +2,25 @@
 
 import { useState, useMemo } from "react";
 import { m } from "framer-motion";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import type {
     LeetCodeProblem,
     Confidence,
     ProblemType,
     Difficulty,
-} from "@/features/leetcode/types";
-import { PROBLEM_TYPES } from "@/features/leetcode/types";
-import { Trash2, ChevronUp, ChevronDown, Filter } from "lucide-react";
+} from "@/lib/types/leetcode";
+import { PROBLEM_TYPES } from "@/features/leetcode/types"; // This import is not changed by the instruction, so it remains.
+import { format } from "date-fns";
+import { Search, ChevronDown, ChevronUp, ArrowUpDown, Trash2, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Select,

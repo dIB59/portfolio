@@ -4,10 +4,12 @@ import { useRef, useEffect, useState } from "react";
 import { m, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, LayoutGrid, List, Loader2 } from "lucide-react";
-import type { LeetCodeProblem } from "@/features/leetcode/types";
-import { getLeetCodeProblems } from "@/features/leetcode/api";
+import type { LeetCodeProblem } from "@/lib/types/leetcode";
+import { getLeetCodeProblems } from "@/lib/supabase/leetcode";
 import { LeetCodeItem } from "./leetcode-item";
 import { LeetCodeTable } from "./leetcode-table";
+import { LeetCodeAdminPanel } from "./leetcode-admin-panel";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 
 // --- 1. Sub-component for the Timeline Logic ---

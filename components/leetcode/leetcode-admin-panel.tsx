@@ -24,14 +24,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import type { LeetCodeProblem } from "@/features/leetcode/types";
-import { PROBLEM_TYPES } from "@/features/leetcode/types";
+import { PROBLEM_TYPES, type ProblemType, type Difficulty, type LeetCodeProblem } from "@/lib/types/leetcode";
 import {
     getLeetCodeProblems,
     updateLeetCodeProblem,
     deleteLeetCodeProblem,
     addLeetCodeProblem,
-} from "@/features/leetcode/api";
+} from "@/lib/supabase/leetcode";
 
 export function LeetCodeAdminPanel() {
     const [problems, setProblems] = useState<LeetCodeProblem[]>([]);

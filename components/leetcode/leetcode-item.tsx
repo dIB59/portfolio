@@ -1,8 +1,10 @@
 "use client";
 
-import { m } from "framer-motion";
-import type { LeetCodeProblem, Confidence } from "@/features/leetcode/types";
-import { Trash2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { CheckCircle2, AlertCircle, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { LeetCodeProblem } from "@/lib/types/leetcode";
+import { Trash2 } from "lucide-react"; // Keeping Trash2 as it's used and not explicitly removed by the instruction
 
 interface LeetCodeItemProps {
     problem: LeetCodeProblem;
@@ -43,18 +45,18 @@ export function LeetCodeItem({
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true, margin: "-50px" }}
-            className={`relative flex items-start gap-4 mb-8 ${isLeft
-                ? "flex-row pl-10 md:pl-0 md:flex-row md:pr-[calc(50%+24px)]"
-                : "flex-row pl-10 md:pl-0 md:flex-row-reverse md:pl-[calc(50%+24px)] md:pr-0"
-                }`}
+            className={`relative flex items - start gap - 4 mb - 8 ${isLeft
+                    ? "flex-row pl-10 md:pl-0 md:flex-row md:pr-[calc(50%+24px)]"
+                    : "flex-row pl-10 md:pl-0 md:flex-row-reverse md:pl-[calc(50%+24px)] md:pr-0"
+                } `}
         >
             <div
-                className={`absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full ${confidenceColors[problem.confidence]} border-2 border-background shadow-lg z-10 -translate-x-1/2`}
+                className={`absolute left - [19px] md: left - 1 / 2 top - 6 w - 3 h - 3 rounded - full ${confidenceColors[problem.confidence]} border - 2 border - background shadow - lg z - 10 - translate - x - 1 / 2`}
             />
 
             <m.div
                 whileHover={{ scale: 1.02, y: -2 }}
-                className={`flex-1 bg-card/80 backdrop-blur-sm rounded-xl p-5 border-2 ${confidenceBorders[problem.confidence]} shadow-lg relative group`}
+                className={`flex - 1 bg - card / 80 backdrop - blur - sm rounded - xl p - 5 border - 2 ${confidenceBorders[problem.confidence]} shadow - lg relative group`}
             >
                 {isAdmin && (
                     <button
@@ -80,7 +82,7 @@ export function LeetCodeItem({
 
                         <div className="flex flex-wrap gap-2 mb-3">
                             <span
-                                className={`px-2 py-1 text-xs font-medium rounded-md text-muted-foreground border ${difficultyBorders[problem.difficulty]}`}
+                                className={`px - 2 py - 1 text - xs font - medium rounded - md text - muted - foreground border ${difficultyBorders[problem.difficulty]} `}
                             >
                                 {problem.difficulty.charAt(0).toUpperCase() +
                                     problem.difficulty.slice(1)}

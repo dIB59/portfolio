@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import type { Difficulty, LeetCodeProblem } from "./types";
+import type { Difficulty, LeetCodeProblem } from "@/lib/types/leetcode";
 
 export async function getLeetCodeProblems(): Promise<LeetCodeProblem[]> {
     const supabase = createClient();

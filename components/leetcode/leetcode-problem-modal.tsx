@@ -6,8 +6,12 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import type { LeetCodeProblem } from "@/features/leetcode/types";
+import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import type { LeetCodeProblem } from "@/lib/types/leetcode";
+import { format } from "date-fns";
+import { Calendar, Tag, AlertCircle, CheckCircle2, FileText, Image as ImageIcon, Lightbulb } from "lucide-react";
 
 interface LeetCodeProblemModalProps {
     problem: LeetCodeProblem | null;
