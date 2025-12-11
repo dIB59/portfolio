@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, memo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Car } from "./car";
 import { Ground } from "./ground";
@@ -14,7 +14,7 @@ interface CarSceneProps {
     onZoneComplete?: (zoneId: string) => void;
 }
 
-export function CarScene({ onZoneComplete }: CarSceneProps) {
+export const CarScene = memo(function CarScene({ onZoneComplete }: CarSceneProps) {
     const lightRef = useRef<THREE.DirectionalLight>(null);
 
     useFrame(({ camera }) => {
@@ -69,4 +69,4 @@ export function CarScene({ onZoneComplete }: CarSceneProps) {
             <DustParticles />
         </Suspense>
     );
-}
+});

@@ -1,13 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { Settings } from "lucide-react";
 
 export function Hero() {
     return (
         <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative">
-            <motion.div
+            <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5, duration: 0.5 }}
@@ -20,30 +20,30 @@ export function Hero() {
                 >
                     <Settings className="w-5 h-5" />
                 </Link>
-            </motion.div>
+            </m.div>
 
-            <motion.div
+            <m.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
             >
-                <motion.h1
+                <m.h1
                     className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-foreground mb-6"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                 >
                     Ibrahim Iqbal
-                </motion.h1>
-                <motion.p
+                </m.h1>
+                <m.p
                     className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8 font-light"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
                 >
                     Full-Stack Developer & Creative Technologist
-                </motion.p>
-                <motion.div
+                </m.p>
+                <m.div
                     className="flex flex-wrap gap-4 justify-center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -67,16 +67,16 @@ export function Hero() {
                     >
                         Contact Me
                     </a>
-                </motion.div>
-            </motion.div>
+                </m.div>
+            </m.div>
 
-            <motion.div
+            <m.div
                 className="absolute bottom-12 left-1/2 -translate-x-1/2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
             >
-                <motion.div
+                <m.div
                     animate={{ y: [0, 10, 0] }}
                     transition={{
                         repeat: Number.POSITIVE_INFINITY,
@@ -85,9 +85,9 @@ export function Hero() {
                     }}
                     className="w-6 h-10 border-2 border-foreground/30 rounded-full flex justify-center pt-2"
                 >
-                    <motion.div className="w-1.5 h-1.5 bg-foreground/50 rounded-full" />
-                </motion.div>
-            </motion.div>
+                    <m.div className="w-1.5 h-1.5 bg-foreground/50 rounded-full" />
+                </m.div>
+            </m.div>
         </section>
     );
 }

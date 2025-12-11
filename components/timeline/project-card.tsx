@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { Project } from "@/lib/projects-data";
 import { ArrowUpRight } from "lucide-react";
 
@@ -11,7 +11,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
     return (
-        <motion.div
+        <m.div
             onClick={onClick}
             whileHover={{
                 scale: 1.02,
@@ -31,7 +31,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             {/* Image */}
             {project.image && (
                 <div className="relative overflow-hidden rounded-lg mb-4 aspect-video bg-muted">
-                    <motion.img
+                    <m.img
                         src={project.image}
                         alt={project.title}
                         className="w-full h-full object-cover"
@@ -47,13 +47,13 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                     <h3 className="text-xl font-semibold text-foreground group-hover:text-foreground/80 transition-colors">
                         {project.title}
                     </h3>
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, x: -10 }}
                         whileHover={{ opacity: 1, x: 0 }}
                         className="opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                         <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
-                    </motion.div>
+                    </m.div>
                 </div>
 
                 <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
@@ -77,6 +77,6 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                     )}
                 </div>
             </div>
-        </motion.div>
+        </m.div>
     );
 }

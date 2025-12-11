@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
     Plus,
     Trash2,
@@ -113,7 +113,7 @@ export function LeetCodeAdminPanel() {
             {/* Add form */}
             <AnimatePresence>
                 {showAddForm && (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
@@ -123,7 +123,7 @@ export function LeetCodeAdminPanel() {
                             onSubmit={handleAdd}
                             onCancel={() => setShowAddForm(false)}
                         />
-                    </motion.div>
+                    </m.div>
                 )}
             </AnimatePresence>
 
@@ -135,7 +135,7 @@ export function LeetCodeAdminPanel() {
 
                 <div className="grid gap-3">
                     {problems.map((problem) => (
-                        <motion.div
+                        <m.div
                             key={problem.id}
                             layout
                             initial={{ opacity: 0, y: 10 }}
@@ -215,7 +215,7 @@ export function LeetCodeAdminPanel() {
                                     </div>
                                 </div>
                             )}
-                        </motion.div>
+                        </m.div>
                     ))}
 
                     {problems.length === 0 && (

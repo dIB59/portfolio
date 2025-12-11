@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import type { ProjectUpdate } from "@/lib/projects-data";
 
@@ -16,14 +16,14 @@ export function TimelineUpdateItem({
     isLeft,
 }: TimelineUpdateItemProps) {
     return (
-        <motion.div
+        <m.div
             initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true, margin: "-100px" }}
             className={`relative flex items-start gap-8 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} flex-row`}
         >
-            <motion.div
+            <m.div
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 transition={{ duration: 0.4, delay: 0.3 }}
@@ -35,7 +35,7 @@ export function TimelineUpdateItem({
             <div
                 className={`hidden md:block w-1/2 ${isLeft ? "text-right pr-12" : "text-left pl-12"}`}
             >
-                <motion.span
+                <m.span
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.4 }}
@@ -43,14 +43,14 @@ export function TimelineUpdateItem({
                     className="text-4xl font-bold text-foreground"
                 >
                     {update.month ? `${update.month.substring(0, 3)} ` : ""}{update.year}
-                </motion.span>
+                </m.span>
             </div>
 
             {/* Update card */}
             <div
                 className={`ml-10 md:ml-0 md:w-1/2 ${isLeft ? "md:pl-12" : "md:pr-12"}`}
             >
-                <motion.div
+                <m.div
                     whileHover={{ scale: 1.02 }}
                     className="bg-card/60 backdrop-blur-sm rounded-xl border border-primary/20 p-5 shadow-sm"
                 >
@@ -88,8 +88,8 @@ export function TimelineUpdateItem({
                             )}
                         </div>
                     </div>
-                </motion.div>
+                </m.div>
             </div>
-        </motion.div>
+        </m.div>
     );
 }

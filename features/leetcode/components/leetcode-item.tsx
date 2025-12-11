@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { LeetCodeProblem, Confidence } from "@/features/leetcode/types";
 import { Trash2 } from "lucide-react";
 
@@ -38,7 +38,7 @@ export function LeetCodeItem({
     const isLeft = index % 2 === 0;
 
     return (
-        <motion.div
+        <m.div
             initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -52,7 +52,7 @@ export function LeetCodeItem({
                 className={`absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full ${confidenceColors[problem.confidence]} border-2 border-background shadow-lg z-10 -translate-x-1/2`}
             />
 
-            <motion.div
+            <m.div
                 whileHover={{ scale: 1.02, y: -2 }}
                 className={`flex-1 bg-card/80 backdrop-blur-sm rounded-xl p-5 border-2 ${confidenceBorders[problem.confidence]} shadow-lg relative group`}
             >
@@ -133,7 +133,7 @@ export function LeetCodeItem({
                         )}
                     </div>
                 </div>
-            </motion.div>
-        </motion.div>
+            </m.div>
+        </m.div>
     );
 }

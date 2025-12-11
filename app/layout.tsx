@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "@/app/globals.css";
+import { MotionProvider } from "@/components/motion-provider";
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -36,7 +37,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className="scroll-smooth">
-            <body className={`font-sans antialiased`}>{children}</body>
+            <body className={`font-sans antialiased`}>
+                <MotionProvider>{children}</MotionProvider>
+            </body>
         </html>
     );
 }

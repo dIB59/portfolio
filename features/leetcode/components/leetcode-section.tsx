@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, LayoutGrid, List, Loader2 } from "lucide-react";
 import type { LeetCodeProblem } from "@/features/leetcode/types";
@@ -38,7 +38,7 @@ function TimelineView({
             {/* Static background line - full height */}
             <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-0.5 bg-border md:-translate-x-1/2" />
 
-            <motion.div
+            <m.div
                 className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-foreground md:-translate-x-1/2"
                 style={{ height: lineHeight }}
             />
@@ -57,7 +57,7 @@ function TimelineView({
 
                 return (
                     <div key={month} className="mb-12">
-                        <motion.div
+                        <m.div
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{
@@ -70,7 +70,7 @@ function TimelineView({
                             <span className="text-lg font-semibold text-foreground bg-background px-4 relative z-10">
                                 {monthName}
                             </span>
-                        </motion.div>
+                        </m.div>
 
                         {groupedByMonth[month].map((problem) => {
                             const currentIndex = globalIndex++;
@@ -139,7 +139,7 @@ export function LeetCodeSection() {
             ref={containerRef}
         >
             <div className="max-w-7xl mx-auto">
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
@@ -152,9 +152,9 @@ export function LeetCodeSection() {
                         <ArrowLeft className="w-4 h-4" />
                         Back to Portfolio
                     </Link>
-                </motion.div>
+                </m.div>
 
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
@@ -189,9 +189,9 @@ export function LeetCodeSection() {
                             </span>
                         </div>
                     </div>
-                </motion.div>
+                </m.div>
 
-                <motion.div
+                <m.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
@@ -217,7 +217,7 @@ export function LeetCodeSection() {
                         <List className="w-4 h-4" />
                         Table
                     </Button>
-                </motion.div>
+                </m.div>
 
                 {isLoading ? (
                     <div className="flex justify-center py-12">

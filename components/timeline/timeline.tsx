@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import { TimelineItem } from "./timeline-item";
 import { TimelineUpdateItem } from "./timeline-update-item";
 import type {
@@ -72,7 +72,7 @@ export function Timeline({ initialEntries }: TimelineProps) {
 
     return (
         <section id="timeline" className="py-20 px-6" ref={containerRef}>
-            <motion.div
+            <m.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -85,12 +85,12 @@ export function Timeline({ initialEntries }: TimelineProps) {
                 <p className="text-muted-foreground text-lg max-w-xl mx-auto">
                     A timeline of my professional milestones and key projects
                 </p>
-            </motion.div>
+            </m.div>
 
             <div className="relative max-w-4xl mx-auto" ref={timelineRef}>
                 <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-0.5 bg-border md:-translate-x-1/2" />
 
-                <motion.div
+                <m.div
                     className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-foreground md:-translate-x-1/2"
                     style={{ height: lineHeight }}
                 />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import type { Project } from "@/lib/projects-data";
 import { X, ExternalLink, Github } from "lucide-react";
 
@@ -31,7 +31,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             {isOpen && (
                 <>
                     {/* Backdrop */}
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -40,7 +40,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                     />
 
                     {/* Modal */}
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -72,7 +72,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                         {/* Content */}
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
                             {project.image && (
-                                <motion.div
+                                <m.div
                                     layoutId={`image-${project.id}`}
                                     className="relative overflow-hidden rounded-xl aspect-video bg-muted"
                                 >
@@ -83,7 +83,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                                         alt={project.title}
                                         className="w-full h-full object-cover"
                                     />
-                                </motion.div>
+                                </m.div>
                             )}
 
                             <div className="space-y-4">
@@ -105,7 +105,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                                         <ul className="space-y-2">
                                             {project.achievements.map(
                                                 (achievement, i) => (
-                                                    <motion.li
+                                                    <m.li
                                                         key={i}
                                                         initial={{
                                                             opacity: 0,
@@ -122,7 +122,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                                                     >
                                                         <span className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 shrink-0" />
                                                         {achievement}
-                                                    </motion.li>
+                                                    </m.li>
                                                 ),
                                             )}
                                         </ul>
@@ -172,7 +172,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                                 </a>
                             )}
                         </div>
-                    </motion.div>
+                    </m.div>
                 </>
             )}
         </AnimatePresence>

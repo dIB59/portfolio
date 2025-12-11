@@ -1,9 +1,18 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { CarScene } from "@/components/car-scene";
+import dynamic from "next/dynamic";
 import { Loader } from "lucide-react";
+
+// Lazy load Three.js Canvas - only loads when this page is accessed
+const Canvas = dynamic(
+    () => import("@react-three/fiber").then((mod) => ({ default: mod.Canvas })),
+    { ssr: false }
+);
+
+const CarScene = dynamic(() => import("@/components/car-scene").then((mod) => ({ default: mod.CarScene })), {
+    ssr: false,
+});
 
 export default function Home() {
     const [completedZones, setCompletedZones] = useState<string[]>([]);

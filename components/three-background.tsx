@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { loadSlim } from "@tsparticles/slim";
 
 import { cn } from "@/lib/utils"; // Assuming this is your class utility function
-import { AnimatePresence, motion } from "framer-motion"; // Using 'framer-motion' instead of 'motion/react' for standard setup
+import { AnimatePresence, m } from "framer-motion"; // Using 'framer-motion' instead of 'motion/react' for standard setup
 
 const ParticlesComponent = ({ className }: { className: string }) => {
     const [init, setInit] = useState(false);
@@ -103,7 +103,7 @@ const ParticlesComponent = ({ className }: { className: string }) => {
 
     return (
         <AnimatePresence>
-            <motion.div
+            <m.div
                 key="particles"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -116,7 +116,7 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 )}
             >
                 <Particles className="w-full h-full" options={options} />
-            </motion.div>
+            </m.div>
             )
         </AnimatePresence>
     );

@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
     Plus,
     Trash2,
@@ -111,7 +111,7 @@ export function ProjectsAdmin() {
             {/* Add form */}
             <AnimatePresence>
                 {showAddForm && (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
@@ -121,7 +121,7 @@ export function ProjectsAdmin() {
                             onSubmit={handleAdd}
                             onCancel={() => setShowAddForm(false)}
                         />
-                    </motion.div>
+                    </m.div>
                 )}
             </AnimatePresence>
 
@@ -132,7 +132,7 @@ export function ProjectsAdmin() {
                 </h3>
 
                 {projects.map((project) => (
-                    <motion.div
+                    <m.div
                         key={project.id}
                         layout
                         initial={{ opacity: 0, y: 10 }}
@@ -219,7 +219,7 @@ export function ProjectsAdmin() {
                                 </div>
                             </div>
                         )}
-                    </motion.div>
+                    </m.div>
                 ))}
 
                 {projects.length === 0 && (

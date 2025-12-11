@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ProjectCard } from "./project-card";
 import type { Project } from "@/lib/projects-data";
 import dynamic from "next/dynamic";
@@ -23,14 +23,14 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
 
     return (
         <>
-            <motion.div
+            <m.div
                 initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true, margin: "-100px" }}
                 className={`relative flex items-start gap-8 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} flex-row`}
             >
-                <motion.div
+                <m.div
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     transition={{ duration: 0.4, delay: 0.3 }}
@@ -42,7 +42,7 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
                 <div
                     className={`hidden md:block w-1/2 ${isLeft ? "text-right pr-12" : "text-left pl-12"}`}
                 >
-                    <motion.span
+                    <m.span
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.4, delay: 0.4 }}
@@ -50,7 +50,7 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
                         className="text-4xl font-bold text-foreground"
                     >
                         {project.month ? `${project.month.substring(0, 3)} ` : ""}{project.year}
-                    </motion.span>
+                    </m.span>
                 </div>
 
                 {/* Project card */}
@@ -62,7 +62,7 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
                         onClick={() => setIsModalOpen(true)}
                     />
                 </div>
-            </motion.div>
+            </m.div>
 
             <ProjectModal
                 project={project}

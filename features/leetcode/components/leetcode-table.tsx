@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type {
     LeetCodeProblem,
     Confidence,
@@ -155,7 +155,7 @@ export function LeetCodeTable({
     }, [problems]);
 
     return (
-        <motion.div
+        <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -327,7 +327,7 @@ export function LeetCodeTable({
                         </thead>
                         <tbody>
                             {filteredAndSortedProblems.map((problem, index) => (
-                                <motion.tr
+                                <m.tr
                                     key={problem.id}
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -403,7 +403,7 @@ export function LeetCodeTable({
                                             )}
                                         </div>
                                     </td>
-                                </motion.tr>
+                                </m.tr>
                             ))}
                             {filteredAndSortedProblems.length === 0 && (
                                 <tr>
@@ -427,6 +427,6 @@ export function LeetCodeTable({
                 isOpen={!!selectedProblem}
                 onClose={() => setSelectedProblem(null)}
             />
-        </motion.div>
+        </m.div>
     );
 }

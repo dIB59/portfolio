@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -39,7 +39,7 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
             <div className="relative z-10 py-12 px-4">
                 <div className="max-w-5xl mx-auto">
                     {/* Header */}
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="mb-8 flex items-center justify-between"
@@ -54,9 +54,9 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
                         <span className="text-sm text-muted-foreground">
                             {userEmail}
                         </span>
-                    </motion.div>
+                    </m.div>
 
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
@@ -68,7 +68,7 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
                         <p className="text-muted-foreground text-lg">
                             Manage your projects and LeetCode journey
                         </p>
-                    </motion.div>
+                    </m.div>
 
                     {/* Logout button */}
                     <div className="flex justify-end mb-6">
@@ -117,32 +117,32 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
 
                     <AnimatePresence mode="wait">
                         {activeTab === "projects" ? (
-                            <motion.div
+                            <m.div
                                 key="projects-tab"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                             >
                                 <ProjectsAdmin />
-                            </motion.div>
+                            </m.div>
                         ) : activeTab === "updates" ? (
-                            <motion.div
+                            <m.div
                                 key="updates-tab"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                             >
                                 <ProjectUpdatesAdmin />
-                            </motion.div>
+                            </m.div>
                         ) : (
-                            <motion.div
+                            <m.div
                                 key="leetcode-tab"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
                             >
                                 <LeetCodeAdminPanel />
-                            </motion.div>
+                            </m.div>
                         )}
                     </AnimatePresence>
                 </div>
