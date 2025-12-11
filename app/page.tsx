@@ -1,24 +1,28 @@
-import { Hero } from "@/components/hero"; // adjust path
+import { Hero } from "@/components/hero";
 import { getProjects } from "@/lib/supabase/projects";
 import { getProjectUpdates } from "@/lib/supabase/project-updates";
 import type { TimelineEntry } from "@/lib/projects-data";
 import { Timeline } from "@/components/timeline/timeline";
+import { TimelineSkeleton } from "@/components/timeline/timeline-skeleton";
 import { Analytics } from "@vercel/analytics/next";
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 // Lazy load particles (client-side component)
 const ParticlesComponent = dynamic(() => import("@/components/three-background"), {
     loading: () => null,
 });
 
-export default async function PortfolioPage() {
-    // 1. Fetch data on the server (in parallel)
+// Separate async component for data fetching
+// This allows streaming - Hero renders immediately, Timeline streams in
+async function TimelineData() {
+    // Fetch data on the server (in parallel)
     const [projects, updates] = await Promise.all([
         getProjects(),
         getProjectUpdates(),
     ]);
 
-    // 2. Prepare the data (Same logic you had in useEffect)
+    // Prepare the data
     const timelineEntries: TimelineEntry[] = [
         ...projects.map((p) => ({
             type: "project" as const,
@@ -58,14 +62,23 @@ export default async function PortfolioPage() {
         return bMonth - aMonth;
     });
 
+    return <Timeline initialEntries={timelineEntries} />;
+}
+
+// Main page component - renders immediately
+export default function PortfolioPage() {
     return (
         <main>
             <div className="relative z-10">
                 <ParticlesComponent className={""} />
 
+                {/* Hero renders instantly - no data dependencies */}
                 <Hero />
-                {/* 3. Pass data down as props */}
-                <Timeline initialEntries={timelineEntries} />
+
+                {/* Timeline streams in when data is ready */}
+                <Suspense fallback={<TimelineSkeleton />}>
+                    <TimelineData />
+                </Suspense>
             </div>
             <Analytics />
         </main>
