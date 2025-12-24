@@ -1,16 +1,18 @@
 import { Hero } from "@/components/hero";
 import { getProjects } from "@/lib/supabase/projects";
+
+export const dynamic = "force-dynamic";
 import { getProjectUpdates } from "@/lib/supabase/project-updates";
 import type { TimelineEntry } from "@/lib/projects-data";
 import { Timeline } from "@/components/timeline/timeline";
 import { TimelineSkeleton } from "@/components/timeline/timeline-skeleton";
 import { Analytics } from "@vercel/analytics/next";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { Suspense } from "react";
 import { ContactForm } from "@/components/contact/contact-form";
 
 // Lazy load particles (client-side component)
-const ParticlesComponent = dynamic(() => import("@/components/three-background"), {
+const ParticlesComponent = nextDynamic(() => import("@/components/three-background"), {
     loading: () => null,
 });
 
