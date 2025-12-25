@@ -19,6 +19,7 @@ import {
     updateProjectUpdate,
 } from "@/lib/supabase/project-updates";
 import { getProjects } from "@/lib/supabase/projects";
+import { revalidatePortfolio } from "@/app/actions/revalidate";
 import { AnimatePresence, m } from "framer-motion";
 import {
     ChevronUp,
@@ -72,6 +73,7 @@ export function ProjectUpdatesAdmin() {
     const handleDelete = async (id: string) => {
         if (confirm("Are you sure you want to delete this update?")) {
             await deleteProjectUpdate(id);
+            await revalidatePortfolio();
             refreshData();
         }
     };
@@ -80,12 +82,14 @@ export function ProjectUpdatesAdmin() {
         update: Omit<ProjectUpdate, "id" | "projectTitle">,
     ) => {
         await addProjectUpdate(update);
+        await revalidatePortfolio();
         refreshData();
         setShowAddForm(false);
     };
 
     const handleUpdate = async (id: string, data: Partial<ProjectUpdate>) => {
         await updateProjectUpdate(id, data);
+        await revalidatePortfolio();
         refreshData();
         setEditingId(null);
     };

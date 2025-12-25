@@ -32,6 +32,7 @@ import {
     deleteLeetCodeProblem,
     addLeetCodeProblem,
 } from "@/lib/supabase/leetcode";
+import { revalidatePortfolio } from "@/app/actions/revalidate";
 
 export function LeetCodeAdminPanel() {
     const [problems, setProblems] = useState<LeetCodeProblem[]>([]);
@@ -53,12 +54,14 @@ export function LeetCodeAdminPanel() {
     const handleDelete = async (id: string) => {
         if (confirm("Are you sure you want to delete this problem?")) {
             await deleteLeetCodeProblem(id);
+            await revalidatePortfolio();
             refreshProblems();
         }
     };
 
     const handleAdd = async (problem: Omit<LeetCodeProblem, "id">) => {
         await addLeetCodeProblem(problem);
+        await revalidatePortfolio();
         refreshProblems();
         setShowAddForm(false);
     };
@@ -68,6 +71,7 @@ export function LeetCodeAdminPanel() {
         updates: Partial<LeetCodeProblem>,
     ) => {
         await updateLeetCodeProblem(id, updates);
+        await revalidatePortfolio();
         refreshProblems();
         setEditingId(null);
     };

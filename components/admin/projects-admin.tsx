@@ -32,6 +32,7 @@ import {
     updateProject,
     deleteProject,
 } from "@/lib/supabase/projects";
+import { revalidatePortfolio } from "@/app/actions/revalidate";
 
 const MONTHS = [
     "January",
@@ -68,18 +69,21 @@ export function ProjectsAdmin() {
     const handleDelete = async (id: string) => {
         if (confirm("Are you sure you want to delete this project?")) {
             await deleteProject(id);
+            await revalidatePortfolio();
             refreshProjects();
         }
     };
 
     const handleAdd = async (project: Omit<Project, "id">) => {
         await addProject(project);
+        await revalidatePortfolio();
         refreshProjects();
         setShowAddForm(false);
     };
 
     const handleUpdate = async (id: string, updates: Partial<Project>) => {
         await updateProject(id, updates);
+        await revalidatePortfolio();
         refreshProjects();
         setEditingId(null);
     };

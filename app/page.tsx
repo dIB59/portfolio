@@ -1,7 +1,6 @@
 import { Hero } from "@/components/hero";
 import { getProjects } from "@/lib/supabase/projects";
 
-export const dynamic = "force-dynamic";
 import { getProjectUpdates } from "@/lib/supabase/project-updates";
 import type { TimelineEntry } from "@/lib/projects-data";
 import { Timeline } from "@/components/timeline/timeline";
