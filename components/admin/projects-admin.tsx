@@ -13,6 +13,7 @@ import {
     ImageIcon,
     Loader2,
 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -151,14 +152,16 @@ export function ProjectsAdmin() {
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex gap-4 flex-1 min-w-0">
                                     {project.image && (
-                                        <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-muted">
-                                            <img
+                                        <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-muted relative">
+                                            <Image
                                                 src={
                                                     project.image ||
                                                     "/placeholder.svg"
                                                 }
                                                 alt={project.title}
-                                                className="w-full h-full object-cover"
+                                                fill
+                                                className="object-cover"
+                                                sizes="64px"
                                             />
                                         </div>
                                     )}
@@ -367,11 +370,15 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
                             onClick={() => fileInputRef.current?.click()}
                         >
                             {imagePreview ? (
-                                <img
-                                    src={imagePreview || "/placeholder.svg"}
-                                    alt="Preview"
-                                    className="w-full h-full object-cover"
-                                />
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={imagePreview || "/placeholder.svg"}
+                                        alt="Preview"
+                                        fill
+                                        className="object-cover"
+                                        sizes="96px"
+                                    />
+                                </div>
                             ) : (
                                 <ImageIcon className="w-8 h-8 text-muted-foreground/50" />
                             )}

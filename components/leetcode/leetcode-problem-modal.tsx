@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { LeetCodeProblem } from "@/lib/types/leetcode";
+import NextImage from "next/image";
 
 interface LeetCodeProblemModalProps {
     problem: LeetCodeProblem | null;
@@ -132,11 +133,13 @@ export function LeetCodeProblemModal({
                                 <p className="font-medium text-sm text-foreground">
                                     Screenshot / Diagram:
                                 </p>
-                                <div className="rounded-lg overflow-hidden border bg-muted">
-                                    <img
+                                <div className="rounded-lg overflow-hidden border bg-muted relative aspect-video">
+                                    <NextImage
                                         src={problem.image}
                                         alt={`Visual reference for ${problem.name}`}
-                                        className="w-full h-auto object-contain max-h-[500px]"
+                                        fill
+                                        className="object-contain"
+                                        sizes="(max-width: 768px) 100vw, 800px"
                                     />
                                 </div>
                             </div>

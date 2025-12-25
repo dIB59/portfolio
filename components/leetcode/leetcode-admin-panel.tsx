@@ -13,6 +13,7 @@ import {
     ImageIcon,
     Loader2,
 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -157,14 +158,16 @@ export function LeetCodeAdminPanel() {
                                         />
 
                                         {problem.image && (
-                                            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-muted">
-                                                <img
+                                            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-muted relative">
+                                                <Image
                                                     src={
                                                         problem.image ||
                                                         "/placeholder.svg"
                                                     }
                                                     alt={problem.name}
-                                                    className="w-full h-full object-cover"
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="48px"
                                                 />
                                             </div>
                                         )}
@@ -432,11 +435,15 @@ function ProblemForm({ initialData, onSubmit, onCancel }: ProblemFormProps) {
                             onClick={() => fileInputRef.current?.click()}
                         >
                             {imagePreview ? (
-                                <img
-                                    src={imagePreview || "/placeholder.svg"}
-                                    alt="Preview"
-                                    className="w-full h-full object-cover"
-                                />
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={imagePreview || "/placeholder.svg"}
+                                        alt="Preview"
+                                        fill
+                                        className="object-cover"
+                                        sizes="80px"
+                                    />
+                                </div>
                             ) : (
                                 <ImageIcon className="w-6 h-6 text-muted-foreground/50" />
                             )}

@@ -2,6 +2,7 @@
 
 import { m } from "framer-motion";
 import type { Project } from "@/lib/projects-data";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 interface ProjectCardProps {
@@ -31,13 +32,19 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             {/* Image */}
             {project.image && (
                 <div className="relative overflow-hidden rounded-lg mb-4 aspect-video bg-muted">
-                    <m.img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover"
+                    <m.div
+                        className="w-full h-full"
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.4 }}
-                    />
+                    >
+                        <Image
+                            src={project.image}
+                            alt={project.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                    </m.div>
                 </div>
             )}
 

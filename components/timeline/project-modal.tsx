@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import type { Project } from "@/lib/projects-data";
+import Image from "next/image";
 import { X, ExternalLink, Github } from "lucide-react";
 
 interface ProjectModalProps {
@@ -73,12 +74,14 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
                             {project.image && (
                                 <div className="relative overflow-hidden rounded-xl aspect-video bg-muted">
-                                    <img
+                                    <Image
                                         src={
                                             project.image || "/placeholder.svg"
                                         }
                                         alt={project.title}
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 768px) 100vw, 800px"
                                     />
                                 </div>
                             )}
