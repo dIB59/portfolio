@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
-import { m, AnimatePresence } from "framer-motion";
 import type { Project } from "@/lib/projects-data";
 import Image from "next/image";
-import { X, ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github } from "lucide-react";
+import {
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    ModalSection
+} from "./modal-base";
 
 interface ProjectModalProps {
     project: Project;
@@ -14,6 +20,10 @@ interface ProjectModalProps {
     achievementsLabel?: string;
 }
 
+/**
+ * ProjectModal - A composed modal for project details and updates.
+ * Demonstrates a senior engineering pattern of component composition.
+ */
 export function ProjectModal({
     project,
     isOpen,
@@ -21,159 +31,119 @@ export function ProjectModal({
     aboutLabel = "About",
     achievementsLabel = "Key Achievements",
 }: ProjectModalProps) {
-    useEffect(() => {
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
-        };
-        if (isOpen) {
-            document.addEventListener("keydown", handleEsc);
-            document.body.style.overflow = "hidden";
-        }
-        return () => {
-            document.removeEventListener("keydown", handleEsc);
-            document.body.style.overflow = "";
-        };
-    }, [isOpen, onClose]);
+    return (
+        <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalContent>
+                <ModalHeader
+                    title={project.title}
+                    subtitle={project.year}
+                    onClose={onClose}
+                />
+
+                <ModalBody>
+                    {project.image && <ProjectMedia project={project} />}
+
+                    <div className="space-y-6">
+                        <ModalSection title={aboutLabel}>
+                            <p className="leading-relaxed">
+                                {project.fullDescription || project.description}
+                            </p>
+                        </ModalSection>
+
+                        {project.achievements && project.achievements.length > 0 && (
+                            <ModalSection title={achievementsLabel}>
+                                <ul className="space-y-3">
+                                    {project.achievements.map((achievement, i) => (
+                                        <li key={i} className="flex items-start gap-3 text-muted-foreground group/item">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0 transition-transform group-hover/item:scale-125" />
+                                            {achievement}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </ModalSection>
+                        )}
+
+                        {project.techStack.length > 0 && <ProjectTechStack techStack={project.techStack} />}
+                    </div>
+                </ModalBody>
+
+                <ModalFooter>
+                    <ProjectLinks project={project} />
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    );
+}
+
+/**
+ * Internal helper for media display
+ */
+function ProjectMedia({ project }: { project: Project }) {
+    return (
+        <div className="relative overflow-hidden rounded-xl aspect-video bg-muted group-hover:shadow-inner transition-shadow">
+            <Image
+                src={project.image || "/placeholder.svg"}
+                alt={project.title}
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 800px"
+            />
+        </div>
+    );
+}
+
+/**
+ * Internal helper for tech stack display
+ */
+function ProjectTechStack({ techStack }: { techStack: string[] }) {
+    return (
+        <ModalSection title="Tech Stack" className="space-y-3">
+            <div className="flex flex-wrap gap-2 pt-1">
+                {techStack.map((tech) => (
+                    <span
+                        key={tech}
+                        className="px-3 py-1.5 text-xs font-semibold bg-primary/5 text-primary border border-primary/10 rounded-full hover:bg-primary/10 transition-colors"
+                    >
+                        {tech}
+                    </span>
+                ))}
+            </div>
+        </ModalSection>
+    );
+}
+
+/**
+ * Internal helper for link buttons
+ */
+function ProjectLinks({ project }: { project: Project }) {
+    const hasLinks = project.liveUrl || project.githubUrl;
+
+    if (!hasLinks) return null;
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    {/* Backdrop */}
-                    <m.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-background/90 z-50"
-                    />
-
-                    {/* Modal */}
-                    <m.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        transition={{
-                            duration: 0.3,
-                            ease: "easeOut",
-                        }}
-                        className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full md:max-h-[85vh] bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col"
-                    >
-                        {/* Header */}
-                        <div className="flex items-center justify-between p-6 border-b border-border">
-                            <div>
-                                <span className="text-sm text-muted-foreground">
-                                    {project.year}
-                                </span>
-                                <h2 className="text-2xl font-bold text-foreground">
-                                    {project.title}
-                                </h2>
-                            </div>
-                            <button
-                                onClick={onClose}
-                                className="p-2 rounded-full hover:bg-secondary transition-colors"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        {/* Content */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                            {project.image && (
-                                <div className="relative overflow-hidden rounded-xl aspect-video bg-muted">
-                                    <Image
-                                        src={
-                                            project.image || "/placeholder.svg"
-                                        }
-                                        alt={project.title}
-                                        fill
-                                        className="object-cover"
-                                        sizes="(max-width: 768px) 100vw, 800px"
-                                    />
-                                </div>
-                            )}
-
-                            <div className="space-y-4">
-                                <div>
-                                    <h3 className="text-lg font-semibold text-foreground mb-2">
-                                        {aboutLabel}
-                                    </h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        {project.fullDescription ||
-                                            project.description}
-                                    </p>
-                                </div>
-
-                                {project.achievements && (
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-foreground mb-2">
-                                            {achievementsLabel}
-                                        </h3>
-                                        <ul className="space-y-2">
-                                            {project.achievements.map(
-                                                (achievement, i) => (
-                                                    <li
-                                                        key={i}
-                                                        className="flex items-start gap-2 text-muted-foreground"
-                                                    >
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-foreground mt-2 shrink-0" />
-                                                        {achievement}
-                                                    </li>
-                                                ),
-                                            )}
-                                        </ul>
-                                    </div>
-                                )}
-
-                                <div>
-                                    {project.techStack.length > 0 && (
-                                        <h3 className="text-sm font-semibold text-foreground mb-2">
-                                            Tech Stack
-                                        </h3>
-                                    )}
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.techStack.map((tech) => (
-                                            <span
-                                                key={tech}
-                                                className="px-3 py-1.5 text-sm bg-secondary text-secondary-foreground rounded-full"
-                                            >
-                                                {tech}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Footer */}
-                        <div className="p-6 border-t border-border flex gap-3">
-                            {project.liveUrl && (
-                                <a
-                                    href={project.liveUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-foreground text-background rounded-lg font-medium hover:bg-foreground/90 transition-colors"
-                                >
-                                    <ExternalLink className="w-4 h-4" />
-                                    View Live
-                                </a>
-                            )}
-                            {project.githubUrl && (
-                                <a
-                                    href={project.githubUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-border rounded-lg font-medium hover:bg-secondary transition-colors"
-                                >
-                                    <Github className="w-4 h-4" />
-                                    Source Code
-                                </a>
-                            )}
-                        </div>
-                    </m.div>
-                </>
+        <>
+            {project.liveUrl && (
+                <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-foreground text-background rounded-xl font-semibold hover:bg-foreground/90 transition-all active:scale-[0.98]"
+                >
+                    <ExternalLink className="w-4 h-4" />
+                    View Live
+                </a>
             )}
-        </AnimatePresence>
+            {project.githubUrl && (
+                <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border border-border rounded-xl font-semibold hover:bg-secondary hover:border-primary/20 transition-all active:scale-[0.98]"
+                >
+                    <Github className="w-4 h-4" />
+                    Source Code
+                </a>
+            )}
+        </>
     );
 }
