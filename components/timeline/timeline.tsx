@@ -1,11 +1,9 @@
 "use client";
 
-import { useRef, useMemo, memo, useState, useEffect } from "react";
+import { useRef, useMemo, memo } from "react";
 import { m, useScroll, useTransform } from "framer-motion";
 import { TimelineItem } from "./timeline-item";
 import { TimelineUpdateItem } from "./timeline-update-item";
-import { getProjects } from "@/lib/supabase/projects";
-import { getProjectUpdates } from "@/lib/supabase/project-updates";
 import type {
     Project,
     ProjectUpdate,
@@ -33,50 +31,8 @@ const monthOrder: Record<string, number> = {
 };
 
 export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps) {
-    const [entries, setEntries] = useState<TimelineEntry[]>(initialEntries);
     const containerRef = useRef<HTMLDivElement>(null);
     const timelineRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const fetchEntries = async () => {
-            try {
-                const [projects, updates] = await Promise.all([
-                    getProjects(),
-                    getProjectUpdates(),
-                ]);
-
-                const newEntries: TimelineEntry[] = [
-                    ...projects.map((p) => ({
-                        type: "project" as const,
-                        id: p.id,
-                        year: p.year,
-                        month: p.month,
-                        data: p,
-                    })),
-                    ...updates.map((u) => ({
-                        type: "update" as const,
-                        id: u.id,
-                        year: u.year,
-                        month: u.month,
-                        data: u,
-                    })),
-                ];
-
-                newEntries.sort((a, b) => {
-                    if (b.year !== a.year) return b.year - a.year;
-                    const aMonth = a.month ? monthOrder[a.month] || 0 : 0;
-                    const bMonth = b.month ? monthOrder[b.month] || 0 : 0;
-                    return bMonth - aMonth;
-                });
-
-                setEntries(newEntries);
-            } catch (err) {
-                console.error("Failed to fetch timeline entries on client:", err);
-            }
-        };
-
-        fetchEntries();
-    }, []);
 
     const { scrollYProgress } = useScroll({
         target: timelineRef,
@@ -89,7 +45,7 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
     const memoizedTimelineData = useMemo(() => {
         const groupedByMonth: Record<string, TimelineEntry[]> = {};
 
-        entries.forEach((entry) => {
+        initialEntries.forEach((entry) => {
             const monthKey = entry.month
                 ? `${entry.year}-${entry.month}`
                 : `${entry.year}-Unknown`;
@@ -112,9 +68,9 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
         });
 
         return { groupedByMonth, sortedKeys };
-    }, [entries]);
+    }, [initialEntries]);
 
-    if (entries.length === 0) {
+    if (initialEntries.length === 0) {
         return (
             <section className="py-20 px-6 text-center text-muted-foreground">
                 No projects yet. Check back later!

@@ -24,16 +24,16 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
     return (
         <>
             <m.div
-                initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
+                initial={{ opacity: 0, x: isLeft ? -20 : 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                viewport={{ once: true, margin: "-50px", amount: 0.2 }}
                 className={`relative flex items-start gap-8 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} flex-row`}
             >
                 <m.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    transition={{ duration: 0.4, delay: 0.3 }}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 + 0.2 }}
                     viewport={{ once: true }}
                     className="absolute left-[19px] md:left-1/2 top-6 w-4 h-4 rounded-full bg-foreground border-2 border-background z-10 -translate-x-1/2"
                 />
@@ -43,9 +43,9 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
                     className={`hidden md:block w-1/2 ${isLeft ? "text-right pr-12" : "text-left pl-12"}`}
                 >
                     <m.span
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.4, delay: 0.4 }}
+                        initial={{ opacity: 0, filter: "blur(4px)" }}
+                        whileInView={{ opacity: 1, filter: "blur(0px)" }}
+                        transition={{ duration: 0.4, delay: index * 0.05 + 0.3 }}
                         viewport={{ once: true }}
                         className="text-4xl font-bold text-foreground"
                     >
