@@ -10,9 +10,17 @@ interface ProjectModalProps {
     project: Project;
     isOpen: boolean;
     onClose: () => void;
+    aboutLabel?: string;
+    achievementsLabel?: string;
 }
 
-export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
+export function ProjectModal({
+    project,
+    isOpen,
+    onClose,
+    aboutLabel = "About",
+    achievementsLabel = "Key Achievements",
+}: ProjectModalProps) {
     useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();
@@ -88,8 +96,8 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
 
                             <div className="space-y-4">
                                 <div>
-                                    <h3 className="text-sm font-semibold text-foreground mb-2">
-                                        About
+                                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                                        {aboutLabel}
                                     </h3>
                                     <p className="text-muted-foreground leading-relaxed">
                                         {project.fullDescription ||
@@ -99,8 +107,8 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
 
                                 {project.achievements && (
                                     <div>
-                                        <h3 className="text-sm font-semibold text-foreground mb-2">
-                                            Key Achievements
+                                        <h3 className="text-lg font-semibold text-foreground mb-2">
+                                            {achievementsLabel}
                                         </h3>
                                         <ul className="space-y-2">
                                             {project.achievements.map(
@@ -119,9 +127,11 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                                 )}
 
                                 <div>
-                                    <h3 className="text-sm font-semibold text-foreground mb-2">
-                                        Tech Stack
-                                    </h3>
+                                    {project.techStack.length > 0 && (
+                                        <h3 className="text-sm font-semibold text-foreground mb-2">
+                                            Tech Stack
+                                        </h3>
+                                    )}
                                     <div className="flex flex-wrap gap-2">
                                         {project.techStack.map((tech) => (
                                             <span
