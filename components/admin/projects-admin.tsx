@@ -264,16 +264,17 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
     const [githubUrl, setGithubUrl] = useState(initialData?.githubUrl || "");
     const [image, setImage] = useState(initialData?.image || "");
     const [imagePreview, setImagePreview] = useState(initialData?.image || "");
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            setImageFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 const result = reader.result as string;
-                setImage(result);
                 setImagePreview(result);
             };
             reader.readAsDataURL(file);
@@ -285,6 +286,18 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
         if (!title.trim() || !description.trim()) return;
 
         setIsSubmitting(true);
+
+        let imageUrl = image;
+
+        // Upload image if a new file was selected
+        if (imageFile) {
+            const { uploadImage } = await import("@/lib/supabase/storage");
+            const uploadedUrl = await uploadImage(imageFile);
+            if (uploadedUrl) {
+                imageUrl = uploadedUrl;
+            }
+        }
+
         await onSubmit({
             title: title.trim(),
             year: Number.parseInt(year),
@@ -300,7 +313,7 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
                 .filter(Boolean),
             liveUrl: liveUrl.trim() || undefined,
             githubUrl: githubUrl.trim() || undefined,
-            image: image || undefined,
+            image: imageUrl || undefined,
         });
         setIsSubmitting(false);
     };
