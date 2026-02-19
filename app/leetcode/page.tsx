@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import ParticlesComponent from "@/components/three-background";
 import { LeetCodeSection } from "@/components/leetcode/leetcode-section";
+
+export const metadata: Metadata = {
+    title: "LeetCode Progress",
+    description: "Tracking my problem-solving journey and algorithmic progress on LeetCode.",
+};
 
 export default function LeetCodePage() {
     return (
