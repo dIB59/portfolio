@@ -41,11 +41,10 @@ export function ModalContent({
         <DialogPrimitive.Portal forceMount>
             <DialogPrimitive.Overlay asChild>
                 <m.div
-                    initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 bg-background/90 z-50 backdrop-blur-sm"
+                    className="fixed inset-0 bg-background/80 z-50 backdrop-blur-[2px]"
                 />
             </DialogPrimitive.Overlay>
             <DialogPrimitive.Content asChild>
@@ -55,7 +54,7 @@ export function ModalContent({
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
                     className={cn(
-                        "fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full md:max-h-[85vh] bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col",
+                        "fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full md:max-h-[85vh] bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col will-change-[transform,opacity]",
                         className
                     )}
                 >

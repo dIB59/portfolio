@@ -23,9 +23,9 @@ export function TimelineItemContainer({
             initial={{ opacity: 0, x: isLeft ? -20 : 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: index * 0.05 }}
-            viewport={{ once: true, margin: "-50px", amount: 0.2 }}
+            viewport={{ once: true, margin: "-20px", amount: 0.1 }}
             className={cn(
-                "relative flex items-start gap-8 flex-row",
+                "relative flex items-start gap-8 flex-row will-change-[transform,opacity]",
                 isLeft ? "md:flex-row" : "md:flex-row-reverse",
                 className
             )}
@@ -45,7 +45,7 @@ export function TimelineMarker({ index }: { index: number }) {
             whileInView={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, delay: index * 0.05 + 0.2 }}
             viewport={{ once: true }}
-            className="absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full bg-primary/50 border-2 border-primary z-10 -translate-x-1/2"
+            className="absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full bg-primary/50 border-2 border-primary z-10 -translate-x-1/2 will-change-transform"
         />
     );
 }
@@ -70,11 +70,11 @@ export function TimelineLabel({
             )}
         >
             <m.span
-                initial={{ opacity: 0, filter: "blur(4px)" }}
-                whileInView={{ opacity: 1, filter: "blur(0px)" }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.4, delay: index * 0.05 + 0.3 }}
                 viewport={{ once: true }}
-                className="text-4xl font-bold text-foreground"
+                className="text-4xl font-bold text-foreground inline-block"
             >
                 {children}
             </m.span>
