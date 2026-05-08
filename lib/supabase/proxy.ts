@@ -5,19 +5,22 @@ interface SessionData {
   isAdmin?: boolean;
 }
 
-const sessionOptions: SessionOptions = {
-  password:
-    process.env.SESSION_PASSWORD ||
-    "dev-only-session-password-do-not-use-in-production-please",
-  cookieName: "portfolio_session",
-  cookieOptions: {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  },
-};
+// Defer reading env vars to runtime (next build evaluates this module).
+function sessionOptions(): SessionOptions {
+  return {
+    password:
+      process.env.SESSION_PASSWORD ||
+      "dev-only-session-password-do-not-use-in-production-please",
+    cookieName: "portfolio_session",
+    cookieOptions: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    },
+  };
+}
 
 /**
  * Edge-runtime middleware. Replaces the previous Supabase auth check.
@@ -31,7 +34,7 @@ export async function updateSession(request: NextRequest) {
     const session = await getIronSession<SessionData>(
       request,
       response,
-      sessionOptions,
+      sessionOptions(),
     );
 
     if (!session.isAdmin) {
