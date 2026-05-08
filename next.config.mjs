@@ -6,20 +6,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Self-contained Node server output for Docker.
+  output: 'standalone',
+
   typescript: {
     ignoreBuildErrors: true,
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'eqxolvfbpywugozjlgkg.supabase.co',
-        port: '',
-        pathname: '/storage/v1/object/public/**',
-      },
-    ],
-  },
 
-}
+  // better-sqlite3 has a native binary that webpack must not try to bundle.
+  serverExternalPackages: ['better-sqlite3'],
+};
 
-export default withBundleAnalyzer(nextConfig)
+export default withBundleAnalyzer(nextConfig);

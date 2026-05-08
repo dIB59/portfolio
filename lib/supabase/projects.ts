@@ -1,107 +1,121 @@
-import { createClient } from "./client";
+"use server";
+
+import { getDb } from "../db/connection";
 import type { Project } from "../projects-data";
 
+interface ProjectRow {
+  id: string;
+  title: string;
+  year: number;
+  month: string | null;
+  description: string;
+  tech_stack: string;
+  image: string | null;
+  achievements: string;
+  live_url: string | null;
+  github_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+function rowToProject(row: ProjectRow): Project {
+  return {
+    id: row.id,
+    title: row.title,
+    year: row.year,
+    month: row.month ?? undefined,
+    description: row.description,
+    techStack: JSON.parse(row.tech_stack || "[]"),
+    image: row.image ?? undefined,
+    achievements: JSON.parse(row.achievements || "[]"),
+    liveUrl: row.live_url ?? undefined,
+    githubUrl: row.github_url ?? undefined,
+  };
+}
+
 export async function getProjects(): Promise<Project[]> {
-    const supabase = createClient();
-    const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("year", { ascending: false })
-        .order("created_at", { ascending: false });
-
-    if (error) {
-        console.error("Error fetching projects:", error);
-        return [];
-    }
-
-    return data.map((p) => ({
-        id: p.id,
-        title: p.title,
-        year: p.year,
-        month: p.month || undefined,
-        description: p.description,
-        techStack: p.tech_stack || [],
-        image: p.image || undefined,
-        achievements: p.achievements || [],
-        liveUrl: p.live_url || undefined,
-        githubUrl: p.github_url || undefined,
-    }));
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `SELECT * FROM projects ORDER BY year DESC, created_at DESC`,
+    )
+    .all() as ProjectRow[];
+  return rows.map(rowToProject);
 }
 
 export async function addProject(
-    project: Omit<Project, "id">,
+  project: Omit<Project, "id">,
 ): Promise<Project | null> {
-    const supabase = createClient();
-    const { data, error } = await supabase
-        .from("projects")
-        .insert({
-            title: project.title,
-            year: project.year,
-            month: project.month || null,
-            description: project.description,
-            tech_stack: project.techStack,
-            image: project.image || null,
-            achievements: project.achievements || [],
-            live_url: project.liveUrl || null,
-            github_url: project.githubUrl || null,
-        })
-        .select()
-        .single();
+  const db = getDb();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
 
-    if (error) {
-        console.error("Error adding project:", error);
-        return null;
-    }
+  db.prepare(
+    `INSERT INTO projects (id, title, year, month, description, tech_stack, image, achievements, live_url, github_url, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  ).run(
+    id,
+    project.title,
+    project.year,
+    project.month ?? null,
+    project.description,
+    JSON.stringify(project.techStack ?? []),
+    project.image ?? null,
+    JSON.stringify(project.achievements ?? []),
+    project.liveUrl ?? null,
+    project.githubUrl ?? null,
+    now,
+    now,
+  );
 
-    return {
-        id: data.id,
-        title: data.title,
-        year: data.year,
-        month: data.month || undefined,
-        description: data.description,
-        techStack: data.tech_stack || [],
-        image: data.image || undefined,
-        achievements: data.achievements || [],
-        liveUrl: data.live_url || undefined,
-        githubUrl: data.github_url || undefined,
-    };
+  const row = db
+    .prepare(`SELECT * FROM projects WHERE id = ?`)
+    .get(id) as ProjectRow;
+
+  return rowToProject(row);
 }
 
 export async function updateProject(
-    id: string,
-    project: Partial<Project>,
+  id: string,
+  project: Partial<Project>,
 ): Promise<boolean> {
-    const supabase = createClient();
-    const { error } = await supabase
-        .from("projects")
-        .update({
-            title: project.title,
-            year: project.year,
-            month: project.month || null,
-            description: project.description,
-            tech_stack: project.techStack,
-            image: project.image || null,
-            achievements: project.achievements,
-            live_url: project.liveUrl || null,
-            github_url: project.githubUrl || null,
-            updated_at: new Date().toISOString(),
-        })
-        .eq("id", id);
+  const db = getDb();
+  const now = new Date().toISOString();
 
-    if (error) {
-        console.error("Error updating project:", error);
-        return false;
-    }
-    return true;
+  const result = db
+    .prepare(
+      `UPDATE projects SET
+        title = COALESCE(?, title),
+        year = COALESCE(?, year),
+        month = ?,
+        description = COALESCE(?, description),
+        tech_stack = COALESCE(?, tech_stack),
+        image = ?,
+        achievements = COALESCE(?, achievements),
+        live_url = ?,
+        github_url = ?,
+        updated_at = ?
+       WHERE id = ?`,
+    )
+    .run(
+      project.title ?? null,
+      project.year ?? null,
+      project.month ?? null,
+      project.description ?? null,
+      project.techStack ? JSON.stringify(project.techStack) : null,
+      project.image ?? null,
+      project.achievements ? JSON.stringify(project.achievements) : null,
+      project.liveUrl ?? null,
+      project.githubUrl ?? null,
+      now,
+      id,
+    );
+
+  return result.changes > 0;
 }
 
 export async function deleteProject(id: string): Promise<boolean> {
-    const supabase = createClient();
-    const { error } = await supabase.from("projects").delete().eq("id", id);
-
-    if (error) {
-        console.error("Error deleting project:", error);
-        return false;
-    }
-    return true;
+  const db = getDb();
+  const result = db.prepare(`DELETE FROM projects WHERE id = ?`).run(id);
+  return result.changes > 0;
 }
