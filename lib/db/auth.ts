@@ -7,31 +7,34 @@ export interface SessionData {
   email?: string;
 }
 
-const SESSION_PASSWORD = process.env.SESSION_PASSWORD ?? "";
-
-if (process.env.NODE_ENV === "production" && SESSION_PASSWORD.length < 32) {
-  throw new Error(
-    "SESSION_PASSWORD environment variable must be at least 32 characters in production.",
-  );
+// Defer the SESSION_PASSWORD check to first use (runtime) instead of module
+// load (build time) — Next.js 16 evaluates server modules during `next build`
+// to collect page data, when env vars aren't set yet.
+function sessionOptions(): SessionOptions {
+  const password = process.env.SESSION_PASSWORD ?? "";
+  if (process.env.NODE_ENV === "production" && password.length < 32) {
+    throw new Error(
+      "SESSION_PASSWORD environment variable must be at least 32 characters in production.",
+    );
+  }
+  return {
+    password:
+      password ||
+      "dev-only-session-password-do-not-use-in-production-please",
+    cookieName: "portfolio_session",
+    cookieOptions: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    },
+  };
 }
-
-const sessionOptions: SessionOptions = {
-  password:
-    SESSION_PASSWORD ||
-    "dev-only-session-password-do-not-use-in-production-please",
-  cookieName: "portfolio_session",
-  cookieOptions: {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  },
-};
 
 export async function getSession() {
   const cookieStore = await cookies();
-  return getIronSession<SessionData>(cookieStore, sessionOptions);
+  return getIronSession<SessionData>(cookieStore, sessionOptions());
 }
 
 export async function isAuthenticated(): Promise<boolean> {
