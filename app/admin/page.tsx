@@ -1,29 +1,29 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import dynamic from "next/dynamic";
-
 import type { Metadata } from "next";
+import { getSession } from "@/lib/db/auth";
 
 export const metadata: Metadata = {
-    title: "Admin Dashboard",
-    robots: {
-        index: false,
-        follow: false,
-    },
+  title: "Admin Dashboard",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
-// Lazy load admin dashboard (heavy component with animations)
 const AdminDashboard = dynamic(
-    () => import("@/components/admin/admin-dashboard").then((mod) => ({ default: mod.AdminDashboard }))
+  () =>
+    import("@/components/admin/admin-dashboard").then((mod) => ({
+      default: mod.AdminDashboard,
+    })),
 );
 
 export default async function AdminPage() {
-    const supabase = await createClient();
-    const { data, error } = await supabase.auth.getUser();
+  const session = await getSession();
 
-    if (error || !data?.user) {
-        redirect("/auth/login");
-    }
+  if (!session.isAdmin) {
+    redirect("/auth/login");
+  }
 
-    return <AdminDashboard userEmail={data.user.email || ""} />;
+  return <AdminDashboard userEmail={session.email ?? "admin"} />;
 }

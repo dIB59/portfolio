@@ -1,32 +1,34 @@
-import { createClient } from "./client";
+"use server";
 
+import fs from "node:fs/promises";
+import path from "node:path";
+
+const UPLOADS_DIR =
+  process.env.UPLOADS_DIR ?? path.join(process.cwd(), "data", "uploads");
+
+/**
+ * Receives a File from a client component (via Server Action FormData) and
+ * writes it into the local uploads directory on the persistent volume.
+ * Returns a public URL like /uploads/<filename>, served by
+ * app/uploads/[filename]/route.ts.
+ */
 export async function uploadImage(file: File): Promise<string | null> {
-    try {
-        const supabase = createClient();
+  try {
+    if (!file || file.size === 0) return null;
 
-        // Create a unique file name
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-        const filePath = `projects/${fileName}`;
+    await fs.mkdir(UPLOADS_DIR, { recursive: true });
 
-        const { data, error } = await supabase.storage
-            .from("portfolio-images")
-            .upload(filePath, file, {
-                upsert: true,
-            });
+    const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+    const random = Math.random().toString(36).slice(2);
+    const filename = `${random}-${Date.now()}.${ext}`;
+    const dest = path.join(UPLOADS_DIR, filename);
 
-        if (error) {
-            console.error("Supabase Storage Error:", error.message, error);
-            return null;
-        }
+    const arrayBuffer = await file.arrayBuffer();
+    await fs.writeFile(dest, Buffer.from(arrayBuffer));
 
-        const { data: { publicUrl } } = supabase.storage
-            .from("portfolio-images")
-            .getPublicUrl(filePath);
-
-        return publicUrl;
-    } catch (err) {
-        console.error("Unexpected error during upload:", err);
-        return null;
-    }
+    return `/uploads/${filename}`;
+  } catch (err) {
+    console.error("Upload error:", err);
+    return null;
+  }
 }

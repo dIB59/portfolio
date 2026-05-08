@@ -1,44 +1,45 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { getIronSession, type SessionOptions } from "iron-session";
 
+interface SessionData {
+  isAdmin?: boolean;
+}
+
+const sessionOptions: SessionOptions = {
+  password:
+    process.env.SESSION_PASSWORD ||
+    "dev-only-session-password-do-not-use-in-production-please",
+  cookieName: "portfolio_session",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  },
+};
+
+/**
+ * Edge-runtime middleware. Replaces the previous Supabase auth check.
+ * Reads the iron-session cookie; redirects unauthenticated /admin requests
+ * to /auth/login. The auth state itself lives in the cookie — no DB call.
+ */
 export async function updateSession(request: NextRequest) {
-    let supabaseResponse = NextResponse.next({
-        request,
-    });
+  const response = NextResponse.next({ request });
 
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return request.cookies.getAll();
-                },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) =>
-                        request.cookies.set(name, value),
-                    );
-                    supabaseResponse = NextResponse.next({
-                        request,
-                    });
-                    cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options),
-                    );
-                },
-            },
-        },
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    const session = await getIronSession<SessionData>(
+      request,
+      response,
+      sessionOptions,
     );
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-
-    // Protect admin routes
-    if (request.nextUrl.pathname.startsWith("/admin") && !user) {
-        const url = request.nextUrl.clone();
-        url.pathname = "/auth/login";
-        return NextResponse.redirect(url);
+    if (!session.isAdmin) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/login";
+      return NextResponse.redirect(url);
     }
+  }
 
-    return supabaseResponse;
+  return response;
 }

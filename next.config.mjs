@@ -6,20 +6,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Self-contained Node server output for Docker.
+  output: 'standalone',
+
   typescript: {
     ignoreBuildErrors: true,
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'eqxolvfbpywugozjlgkg.supabase.co',
-        port: '',
-        pathname: '/storage/v1/object/public/**',
-      },
-    ],
-  },
 
-}
+  // Don't try to bundle pg's optional native acceleration module.
+  serverExternalPackages: ['pg', 'pg-native'],
+};
 
-export default withBundleAnalyzer(nextConfig)
+export default withBundleAnalyzer(nextConfig);

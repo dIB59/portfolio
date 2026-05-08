@@ -1,14 +1,29 @@
-import { createBrowserClient } from "@supabase/ssr";
+/**
+ * Compatibility shim — Supabase has been replaced with Postgres + iron-session.
+ * Kept because admin-dashboard.tsx still imports createClient() to call
+ * supabase.auth.signOut(). We expose a minimal stub that posts to
+ * /api/auth/logout instead.
+ */
 
-let client: ReturnType<typeof createBrowserClient> | null = null;
+interface AuthShim {
+  signOut: () => Promise<{ error: null }>;
+}
 
-export function createClient() {
-    if (client) return client;
+interface ClientShim {
+  auth: AuthShim;
+}
 
-    client = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
-
-    return client;
+export function createClient(): ClientShim {
+  return {
+    auth: {
+      signOut: async () => {
+        try {
+          await fetch("/api/auth/logout", { method: "POST" });
+        } catch {
+          // best-effort
+        }
+        return { error: null };
+      },
+    },
+  };
 }
