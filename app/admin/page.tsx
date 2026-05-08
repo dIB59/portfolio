@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   },
 };
 
+// Auth check needs request cookies; never prerender.
+export const dynamic = "force-dynamic";
+
 const AdminDashboard = dynamic(
   () =>
     import("@/components/admin/admin-dashboard").then((mod) => ({

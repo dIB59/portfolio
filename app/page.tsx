@@ -10,6 +10,10 @@ import nextDynamic from "next/dynamic";
 import { Suspense } from "react";
 import { ContactForm } from "@/components/contact/contact-form";
 
+// Render per-request — the timeline pulls live data from Postgres, which
+// isn't reachable at build time.
+export const dynamic = "force-dynamic";
+
 // Lazy load particles (client-side component)
 const ParticlesComponent = nextDynamic(() => import("@/components/three-background"), {
     loading: () => null,
