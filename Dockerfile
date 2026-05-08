@@ -5,11 +5,8 @@ FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-# Lockfile may be out of sync after the Supabase→Postgres migration and there's
-# no local Node to regenerate it; CI resolves a fresh tree. Switch to `npm ci`
-# once the lockfile is committed in sync.
-RUN npm install --no-audit --no-fund
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
 
 COPY . .
 
