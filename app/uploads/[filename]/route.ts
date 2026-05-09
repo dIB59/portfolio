@@ -23,7 +23,10 @@ export async function GET(
   const { filename } = await ctx.params;
 
   if (filename.includes("/") || filename.includes("..") || filename.startsWith(".")) {
-    return new NextResponse("Bad request", { status: 400 });
+    return new NextResponse("Bad request", {
+      status: 400,
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   const filePath = path.join(UPLOADS_DIR, filename);
@@ -41,6 +44,11 @@ export async function GET(
       },
     });
   } catch {
-    return new NextResponse("Not found", { status: 404 });
+    // Don't let Cloudflare cache 404s — file might appear later (e.g. after
+    // restoring uploads) and we want freshly-added files to be accessible.
+    return new NextResponse("Not found", {
+      status: 404,
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 }

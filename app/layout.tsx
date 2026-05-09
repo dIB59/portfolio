@@ -1,8 +1,23 @@
 import type React from "react";
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { MotionProvider } from "@/components/motion-provider";
 import { Toaster } from "@/components/ui/sonner";
+
+// Self-hosted via next/font so every visitor gets the same typeface regardless
+// of OS — Tailwind's default font-sans falls back to platform fonts which
+// produces a Mac-vs-everyone-else mismatch.
+const geistSans = Geist({
+    subsets: ["latin"],
+    variable: "--font-geist-sans",
+    display: "swap",
+});
+const geistMono = Geist_Mono({
+    subsets: ["latin"],
+    variable: "--font-geist-mono",
+    display: "swap",
+});
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://ibrahimiqbal.vercel.app";
 
@@ -84,8 +99,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="scroll-smooth">
-            <body className={`font-sans antialiased`}>
+        <html
+            lang="en"
+            className={`scroll-smooth ${geistSans.variable} ${geistMono.variable}`}
+        >
+            <body className="font-sans antialiased">
                 <MotionProvider>{children}</MotionProvider>
                 <Toaster />
             </body>
