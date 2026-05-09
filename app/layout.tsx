@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         siteName: "Ibrahim Iqbal Portfolio",
         images: [
             {
-                url: "/og-image.png",
+                url: "/sleek-sports-car-exterior.jpg",
                 width: 1200,
                 height: 630,
                 alt: "Ibrahim Iqbal Portfolio",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Ibrahim Iqbal | Full-Stack Developer",
         description: "Full-Stack Developer - Career journey and project showcase",
-        images: ["/og-image.png"],
+        images: ["/sleek-sports-car-exterior.jpg"],
         creator: "@ibrahimiqbal",
     },
     robots: {
