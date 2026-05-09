@@ -1,4 +1,4 @@
-name: Build and push image
+name: Build, push, and deploy
 
 on:
   push:
@@ -16,10 +16,16 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      sha7: ${{ steps.vars.outputs.sha7 }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Compute short SHA
+        id: vars
+        run: echo "sha7=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -52,3 +58,64 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # Push-to-deploy: bump the portfolio image tag in the homelab repo, which
+  # triggers the homelab CI to terraform apply → K8s rolling restart.
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout homelab
+        uses: actions/checkout@v4
+        with:
+          repository: dIB59/homelab
+          token: ${{ secrets.HOMELAB_DEPLOY_TOKEN }}
+          path: homelab
+
+      - name: Bump portfolio image tag in apps.auto.tfvars
+        working-directory: homelab
+        env:
+          SHA7: ${{ needs.build.outputs.sha7 }}
+        run: |
+          set -e
+          # Replace the value of `image` for the portfolio entry. The block
+          # uses HCL syntax: `image = "ghcr.io/dib59/portfolio:<tag>"`.
+          # Match within the portfolio block only by keying on the line
+          # immediately after the "portfolio" key opens.
+          python3 - <<'PY'
+          import os, re, pathlib
+          p = pathlib.Path("apps.auto.tfvars")
+          src = p.read_text()
+          sha = os.environ["SHA7"]
+          new_tag = f"ghcr.io/dib59/portfolio:sha-{sha}"
+          # Replace inside the portfolio = { ... } block only.
+          pattern = re.compile(
+              r'("portfolio"\s*=\s*\{[^{}]*?image\s*=\s*")[^"]+(")',
+              re.DOTALL,
+          )
+          new_src, n = pattern.subn(rf"\g<1>{new_tag}\g<2>", src, count=1)
+          if n != 1:
+              raise SystemExit("Could not find portfolio image line to update")
+          p.write_text(new_src)
+          print(f"Bumped portfolio image to {new_tag}")
+          PY
+
+      - name: Commit and push
+        working-directory: homelab
+        env:
+          SHA7: ${{ needs.build.outputs.sha7 }}
+        run: |
+          set -e
+          git config user.name  "portfolio-deploy[bot]"
+          git config user.email "portfolio-deploy@users.noreply.github.com"
+
+          if git diff --quiet apps.auto.tfvars; then
+            echo "No image change — skipping commit."
+            exit 0
+          fi
+
+          git add apps.auto.tfvars
+          git commit -m "Bump portfolio to sha-${SHA7}"
+          git push
