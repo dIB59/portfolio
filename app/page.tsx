@@ -6,9 +6,16 @@ import type { TimelineEntry } from "@/lib/projects-data";
 import { Timeline } from "@/components/timeline/timeline";
 import { TimelineSkeleton } from "@/components/timeline/timeline-skeleton";
 import { Analytics } from "@vercel/analytics/next";
+import nextDynamic from "next/dynamic";
 import { Suspense } from "react";
 import { ContactForm } from "@/components/contact/contact-form";
 import { SiteFooter } from "@/components/site-footer";
+
+// Lazy-load particles client-side; sits behind everything via fixed inset-0 z-0.
+const ParticlesComponent = nextDynamic(
+    () => import("@/components/three-background"),
+    { loading: () => null },
+);
 
 // Render per-request — the timeline pulls live data from Postgres, which
 // isn't reachable at build time.
@@ -55,7 +62,8 @@ async function TimelineData() {
 export default function PortfolioPage() {
     return (
         <>
-            <main>
+            <ParticlesComponent className="" />
+            <main className="relative z-10">
                 <Hero />
 
                 <AboutManifesto />
