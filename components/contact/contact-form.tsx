@@ -49,18 +49,31 @@ export function ContactForm() {
     }, [state, form]);
 
     return (
-        <section className="py-24 relative z-10" id="contact">
-            <div className="container px-4 md:px-6 mx-auto max-w-3xl">
-                <div className="text-center mb-12 space-y-4">
-                    <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
-                        Get in Touch
+        <section
+            className="py-24 md:py-32 px-6 md:px-12 lg:px-20 relative z-10 border-t border-border/60"
+            id="contact"
+        >
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+                <div className="md:col-span-5 space-y-6">
+                    <p className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                        <span className="inline-block w-6 h-px bg-primary align-middle mr-2" />
+                        03 / Contact
+                    </p>
+                    <h2
+                        className="font-display italic text-foreground leading-[0.95] tracking-[-0.02em]"
+                        style={{ fontSize: "clamp(2.5rem, 7vw, 5.5rem)" }}
+                    >
+                        Get in
+                        <br />
+                        touch.
                     </h2>
-                    <p className="text-muted-foreground text-lg max-w-[600px] mx-auto">
-                        Have a project in mind or just want to say hi? I'd love to hear from you.
+                    <p className="text-muted-foreground text-base md:text-lg max-w-md leading-relaxed">
+                        Have a project in mind, or just want to say hi?
+                        I read every message and reply within a day or two.
                     </p>
                 </div>
 
-                <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-sm">
+                <div className="md:col-span-7">
                     <form
                         ref={formRef}
                         action={formAction}
@@ -89,7 +102,7 @@ export function ContactForm() {
                                     aria-invalid={!!form.formState.errors.name}
                                 />
                                 {form.formState.errors.name && (
-                                    <p className="text-sm text-destructive">
+                                    <p className="text-sm text-destructive" role="alert">
                                         {form.formState.errors.name.message}
                                     </p>
                                 )}
@@ -109,7 +122,7 @@ export function ContactForm() {
                                     aria-invalid={!!form.formState.errors.email}
                                 />
                                 {form.formState.errors.email && (
-                                    <p className="text-sm text-destructive">
+                                    <p className="text-sm text-destructive" role="alert">
                                         {form.formState.errors.email.message}
                                     </p>
                                 )}
@@ -129,9 +142,13 @@ export function ContactForm() {
                                 className="min-h-[150px] resize-none"
                                 {...form.register("message")}
                                 aria-invalid={!!form.formState.errors.message}
+                                aria-describedby="message-help"
                             />
+                            <p id="message-help" className="text-xs text-muted-foreground">
+                                A few sentences is plenty.
+                            </p>
                             {form.formState.errors.message && (
-                                <p className="text-sm text-destructive">
+                                <p className="text-sm text-destructive" role="alert">
                                     {form.formState.errors.message.message}
                                 </p>
                             )}
@@ -139,18 +156,19 @@ export function ContactForm() {
 
                         <Button
                             type="submit"
-                            className="w-full md:w-auto md:min-w-[200px]"
+                            size="lg"
+                            className="w-full md:w-auto md:min-w-[220px] rounded-full"
                             disabled={isPending}
                         >
                             {isPending ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Sending...
+                                    Sending…
                                 </>
                             ) : (
                                 <>
                                     <Send className="mr-2 h-4 w-4" />
-                                    Send Message
+                                    Send message
                                 </>
                             )}
                         </Button>

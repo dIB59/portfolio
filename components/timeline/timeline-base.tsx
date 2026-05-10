@@ -22,7 +22,7 @@ export function TimelineItemContainer({
         <m.div
             initial={{ opacity: 0, x: isLeft ? -20 : 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.05 }}
+            transition={{ duration: 0.5, delay: index * 0.04 }}
             viewport={{ once: true, margin: "-20px", amount: 0.1 }}
             className={cn(
                 "relative flex items-start gap-8 flex-row will-change-[transform,opacity]",
@@ -43,9 +43,9 @@ export function TimelineMarker({ index }: { index: number }) {
         <m.div
             initial={{ scale: 0.8, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.05 + 0.2 }}
+            transition={{ duration: 0.3, delay: index * 0.04 + 0.2 }}
             viewport={{ once: true }}
-            className="absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full bg-primary/50 border-2 border-primary z-10 -translate-x-1/2 will-change-transform"
+            className="absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full bg-primary border-2 border-background z-10 -translate-x-1/2 will-change-transform"
         />
     );
 }
@@ -72,9 +72,9 @@ export function TimelineLabel({
             <m.span
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: index * 0.05 + 0.3 }}
+                transition={{ duration: 0.4, delay: index * 0.04 + 0.3 }}
                 viewport={{ once: true }}
-                className="text-4xl font-bold text-foreground inline-block"
+                className="font-display italic text-4xl text-foreground inline-block"
             >
                 {children}
             </m.span>

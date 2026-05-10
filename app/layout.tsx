@@ -1,8 +1,9 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "@/app/globals.css";
 import { MotionProvider } from "@/components/motion-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 // Self-hosted via next/font so every visitor gets the same typeface regardless
@@ -16,6 +17,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
     subsets: ["latin"],
     variable: "--font-geist-mono",
+    display: "swap",
+});
+const instrumentSerif = Instrument_Serif({
+    subsets: ["latin"],
+    weight: "400",
+    style: ["normal", "italic"],
+    variable: "--font-instrument-serif",
     display: "swap",
 });
 
@@ -101,11 +109,19 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`scroll-smooth ${geistSans.variable} ${geistMono.variable}`}
+            suppressHydrationWarning
+            className={`scroll-smooth ${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
         >
             <body className="font-sans antialiased">
-                <MotionProvider>{children}</MotionProvider>
-                <Toaster />
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <MotionProvider>{children}</MotionProvider>
+                    <Toaster />
+                </ThemeProvider>
             </body>
         </html>
     );

@@ -67,7 +67,11 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
             return (monthOrder[monthB] || 0) - (monthOrder[monthA] || 0);
         });
 
-        return { groupedByMonth, sortedKeys };
+        // Total count of project-type entries; we number them in display order
+        // so the newest at the top is the largest (e.g. №07).
+        const totalProjects = initialEntries.filter((e) => e.type === "project").length;
+
+        return { groupedByMonth, sortedKeys, totalProjects };
     }, [initialEntries]);
 
     if (initialEntries.length === 0) {
@@ -79,33 +83,49 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
     }
 
     let globalIndex = 0;
+    let projectCounter = memoizedTimelineData.totalProjects; // newest = highest number
 
     return (
-        <section id="timeline" className="py-20 px-6" ref={containerRef}>
+        <section
+            id="timeline"
+            className="py-24 md:py-32 px-6 md:px-12 lg:px-20 border-t border-border/60"
+            ref={containerRef}
+        >
             <m.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="text-center mb-20 relative z-20"
+                className="max-w-7xl mx-auto mb-16 md:mb-24 relative z-20 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16"
             >
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-                    Career Journey
-                </h2>
-                <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-                    A timeline of my professional milestones and key projects
-                </p>
+                <div className="md:col-span-3">
+                    <p className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                        <span className="inline-block w-6 h-px bg-primary align-middle mr-2" />
+                        02 / Journey
+                    </p>
+                </div>
+                <div className="md:col-span-9 space-y-4">
+                    <h2
+                        className="font-display italic text-foreground leading-[0.95] tracking-[-0.02em]"
+                        style={{ fontSize: "clamp(2.5rem, 7vw, 5.5rem)" }}
+                    >
+                        Things I&rsquo;ve shipped.
+                    </h2>
+                    <p className="text-muted-foreground text-base md:text-lg max-w-xl">
+                        Reverse-chronological. Click any card for the long version.
+                    </p>
+                </div>
             </m.div>
 
             <div className="relative max-w-4xl mx-auto" ref={timelineRef}>
                 <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-0.5 bg-border md:-translate-x-1/2" />
 
                 <m.div
-                    className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-foreground md:-translate-x-1/2 origin-top"
+                    className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-primary md:-translate-x-1/2 origin-top"
                     style={{ scaleY, height: "100%" }}
                 />
 
-                <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-foreground md:-translate-x-1/2 -translate-y-1/2 z-10" />
+                <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-primary md:-translate-x-1/2 -translate-y-1/2 z-10" />
 
                 {memoizedTimelineData.sortedKeys.map((monthKey, monthIdx) => {
                     const [year, month] = monthKey.split("-");
@@ -120,6 +140,10 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
                                 {memoizedTimelineData.groupedByMonth[monthKey].map((entry) => {
                                     const currentIndex = globalIndex++;
                                     const isLeft = currentIndex % 2 === 0;
+                                    const projectNumber =
+                                        entry.type === "project"
+                                            ? projectCounter--
+                                            : undefined;
 
                                     return entry.type === "project" ? (
                                         <TimelineItem
@@ -127,6 +151,7 @@ export const Timeline = memo(function Timeline({ initialEntries }: TimelineProps
                                             project={entry.data as Project}
                                             index={currentIndex}
                                             isLeft={isLeft}
+                                            projectNumber={projectNumber}
                                         />
                                     ) : (
                                         <TimelineUpdateItem

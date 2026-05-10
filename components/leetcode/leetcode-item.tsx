@@ -1,8 +1,13 @@
 "use client";
 
 import { m } from "framer-motion";
-import type { LeetCodeProblem, Confidence } from "@/lib/types/leetcode";
-import { Trash2 } from "lucide-react";
+import {
+    type LeetCodeProblem,
+    CONFIDENCE_LABELS,
+    CONFIDENCE_DOT_CLASSES,
+    CONFIDENCE_BORDER_CLASSES,
+} from "@/lib/types/leetcode";
+import { Check, Trash2 } from "lucide-react";
 
 interface LeetCodeItemProps {
     problem: LeetCodeProblem;
@@ -11,22 +16,10 @@ interface LeetCodeItemProps {
     onDelete: () => void;
 }
 
-const confidenceColors: Record<Confidence, string> = {
-    green: "bg-green-500",
-    yellow: "bg-yellow-500",
-    red: "bg-red-500",
-};
-
-const confidenceBorders: Record<Confidence, string> = {
-    green: "border-green-500/30",
-    yellow: "border-yellow-500/30",
-    red: "border-red-500/30",
-};
-
 const difficultyBorders: Record<string, string> = {
-    easy: "border-green-500/30",
-    medium: "border-yellow-500/30",
-    hard: "border-red-500/30",
+    easy: "border-emerald-500/40",
+    medium: "border-amber-500/40",
+    hard: "border-rose-500/40",
 };
 
 export function LeetCodeItem({
@@ -49,58 +42,65 @@ export function LeetCodeItem({
                 } `}
         >
             <div
-                className={`absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full ${confidenceColors[problem.confidence]} border-2 border-background shadow-lg z-10 -translate-x-1/2`}
+                className={`absolute left-[19px] md:left-1/2 top-6 w-3 h-3 rounded-full ${CONFIDENCE_DOT_CLASSES[problem.confidence]} border-2 border-background shadow-lg z-10 -translate-x-1/2`}
             />
 
             <m.div
-                whileHover={{ scale: 1.02, y: -2 }}
-                className={`flex-1 bg-card/80 backdrop-blur-sm rounded-xl p-5 border-2 ${confidenceBorders[problem.confidence]} shadow-lg relative group`}
+                whileHover={{ y: -2 }}
+                className={`flex-1 bg-card rounded-xl p-5 border ${CONFIDENCE_BORDER_CLASSES[problem.confidence]} shadow-sm hover:shadow-md transition-shadow relative group`}
             >
                 {isAdmin && (
                     <button
                         onClick={onDelete}
+                        aria-label={`Delete problem: ${problem.name}`}
                         className="absolute top-3 right-3 p-1.5 rounded-lg bg-destructive/10 text-destructive opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/20"
                     >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
                     </button>
                 )}
 
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-bold text-foreground text-lg">
+                            <h3 className="font-display italic text-foreground text-xl leading-tight">
                                 {problem.problemNumber && (
-                                    <span className="text-muted-foreground font-normal">
-                                        #{problem.problemNumber}{" "}
+                                    <span className="text-muted-foreground font-mono not-italic mr-1">
+                                        #{problem.problemNumber}
                                     </span>
                                 )}
                                 {problem.name}
                             </h3>
                         </div>
 
-                        <div className="flex flex-wrap gap-2 mb-3">
+                        <div className="flex flex-wrap gap-1.5 mb-3">
                             <span
-                                className={`px-2 py-1 text-xs font-medium rounded-md text-muted-foreground border ${difficultyBorders[problem.difficulty]} `}
+                                className={`px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider rounded-md text-muted-foreground border ${difficultyBorders[problem.difficulty]}`}
                             >
-                                {problem.difficulty.charAt(0).toUpperCase() +
-                                    problem.difficulty.slice(1)}
+                                {problem.difficulty}
                             </span>
-                            <span className="px-2 py-1 text-xs font-medium bg-muted rounded-md text-muted-foreground">
+                            <span className="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider rounded-md text-muted-foreground border border-border bg-card">
                                 {problem.type}
                             </span>
-                            <span className="px-2 py-1 text-xs font-medium bg-muted rounded-md text-muted-foreground">
-                                {new Date(
-                                    problem.solvedDate,
-                                ).toLocaleDateString()}
+                            <span
+                                className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider rounded-md text-muted-foreground border ${CONFIDENCE_BORDER_CLASSES[problem.confidence]}`}
+                            >
+                                <span
+                                    className={`w-1.5 h-1.5 rounded-full ${CONFIDENCE_DOT_CLASSES[problem.confidence]}`}
+                                    aria-hidden="true"
+                                />
+                                {CONFIDENCE_LABELS[problem.confidence]}
+                            </span>
+                            <span className="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider rounded-md text-muted-foreground tabular-nums">
+                                {new Date(problem.solvedDate).toLocaleDateString()}
                             </span>
                         </div>
 
                         {problem.stuckOn && (
                             <div className="mb-3">
-                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                    Got stuck on:
+                                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                    Got stuck on
                                 </span>
-                                <p className="text-sm text-foreground/80 mt-1">
+                                <p className="text-sm text-foreground/90 mt-1">
                                     {problem.stuckOn}
                                 </p>
                             </div>
@@ -108,27 +108,30 @@ export function LeetCodeItem({
 
                         {problem.notes && (
                             <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground">
-                                <p className="font-medium text-foreground mb-1">Notes:</p>
+                                <p className="font-medium text-foreground mb-1">Notes</p>
                                 {problem.notes}
                             </div>
                         )}
 
                         {problem.hints && problem.hints.length > 0 && (
                             <div className="mt-4 space-y-2">
-                                <p className="font-medium text-sm text-foreground">Hints:</p>
-                                <div className="grid gap-2">
+                                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                    Hints
+                                </p>
+                                <ul className="space-y-1.5">
                                     {problem.hints.map((hint, i) => (
-                                        <div
+                                        <li
                                             key={i}
-                                            className="p-3 bg-muted/30 rounded-lg text-sm text-muted-foreground border border-border/50"
+                                            className="flex items-start gap-2 text-sm text-foreground/90"
                                         >
-                                            <span className="font-medium text-foreground mr-2">
-                                                {i + 1}.
-                                            </span>
-                                            {hint}
-                                        </div>
+                                            <Check
+                                                className="w-4 h-4 text-primary mt-0.5 shrink-0"
+                                                aria-hidden="true"
+                                            />
+                                            <span>{hint}</span>
+                                        </li>
                                     ))}
-                                </div>
+                                </ul>
                             </div>
                         )}
                     </div>

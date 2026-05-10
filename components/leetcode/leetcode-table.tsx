@@ -8,6 +8,8 @@ import {
     type ProblemType,
     type Difficulty,
     PROBLEM_TYPES,
+    CONFIDENCE_LABELS,
+    CONFIDENCE_DOT_CLASSES,
 } from "@/lib/types/leetcode";
 
 import { ChevronDown, ChevronUp, Trash2, Filter } from "lucide-react";
@@ -32,18 +34,6 @@ interface LeetCodeTableProps {
     isAdmin: boolean;
     onDelete: (id: string) => void;
 }
-
-const confidenceColors: Record<Confidence, string> = {
-    green: "bg-green-500",
-    yellow: "bg-yellow-500",
-    red: "bg-red-500",
-};
-
-const confidenceLabels: Record<Confidence, string> = {
-    green: "Confident",
-    yellow: "Needs Review",
-    red: "Struggled",
-};
 
 type SortField = "date" | "name" | "type" | "confidence" | "difficulty";
 type SortDirection = "asc" | "desc";
@@ -163,32 +153,32 @@ export function LeetCodeTable({
         >
             {/* Stats Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4 border text-center">
-                    <div className="text-2xl font-bold text-foreground">
+                <div className="bg-card rounded-lg p-4 border text-center">
+                    <div className="text-2xl font-bold text-foreground tabular-nums">
                         {stats.total}
                     </div>
                     <div className="text-sm text-muted-foreground">
                         Total Problems
                     </div>
                 </div>
-                <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4 border text-center">
-                    <div className="text-2xl font-bold text-green-500">
+                <div className="bg-card rounded-lg p-4 border text-center">
+                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                         {stats.green}
                     </div>
                     <div className="text-sm text-muted-foreground">
                         Confident
                     </div>
                 </div>
-                <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4 border text-center">
-                    <div className="text-2xl font-bold text-yellow-500">
+                <div className="bg-card rounded-lg p-4 border text-center">
+                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 tabular-nums">
                         {stats.yellow}
                     </div>
                     <div className="text-sm text-muted-foreground">
                         Needs Review
                     </div>
                 </div>
-                <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4 border text-center">
-                    <div className="text-2xl font-bold text-red-500">
+                <div className="bg-card rounded-lg p-4 border text-center">
+                    <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 tabular-nums">
                         {stats.red}
                     </div>
                     <div className="text-sm text-muted-foreground">
@@ -211,7 +201,7 @@ export function LeetCodeTable({
                         setFilterType(v as ProblemType | "all")
                     }
                 >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-40" aria-label="Filter by problem type">
                         <SelectValue placeholder="Problem Type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -229,7 +219,7 @@ export function LeetCodeTable({
                         setFilterConfidence(v as Confidence | "all")
                     }
                 >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-40" aria-label="Filter by confidence">
                         <SelectValue placeholder="Confidence" />
                     </SelectTrigger>
                     <SelectContent>
@@ -245,7 +235,7 @@ export function LeetCodeTable({
                         setFilterDifficulty(v as Difficulty | "all")
                     }
                 >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-40" aria-label="Filter by difficulty">
                         <SelectValue placeholder="Difficulty" />
                     </SelectTrigger>
                     <SelectContent>
@@ -273,7 +263,7 @@ export function LeetCodeTable({
             </div>
 
             {/* Table */}
-            <div className="bg-card/80 backdrop-blur-sm rounded-xl border overflow-hidden">
+            <div className="bg-card rounded-xl border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
@@ -367,18 +357,19 @@ export function LeetCodeTable({
                                     <td className="p-4">
                                         <div className="flex items-center gap-2">
                                             <div
-                                                className={`w-3 h-3 rounded-full ${confidenceColors[problem.confidence]}`}
+                                                className={`w-3 h-3 rounded-full ${CONFIDENCE_DOT_CLASSES[problem.confidence]}`}
+                                                aria-hidden="true"
                                             />
                                             <span className="text-sm text-muted-foreground">
                                                 {
-                                                    confidenceLabels[
+                                                    CONFIDENCE_LABELS[
                                                     problem.confidence
                                                     ]
                                                 }
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="p-4 text-sm text-muted-foreground">
+                                    <td className="p-4 text-sm text-muted-foreground tabular-nums">
                                         {new Date(
                                             problem.solvedDate,
                                         ).toLocaleDateString()}

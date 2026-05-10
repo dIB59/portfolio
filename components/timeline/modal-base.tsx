@@ -85,7 +85,7 @@ export function ModalHeader({
                         {subtitle}
                     </span>
                 )}
-                <DialogPrimitive.Title className="text-2xl font-bold text-foreground">
+                <DialogPrimitive.Title className="font-display italic text-3xl text-foreground leading-tight">
                     {title}
                 </DialogPrimitive.Title>
             </div>

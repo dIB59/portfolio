@@ -21,16 +21,20 @@ interface TimelineItemProps {
     project: Project;
     index: number;
     isLeft: boolean;
+    projectNumber?: number;
 }
 
 /**
  * TimelineItem - A composed timeline entry for projects.
  * Leverages timeline primitives for a professional, senior-level architecture.
  */
-export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
+export function TimelineItem({ project, index, isLeft, projectNumber }: TimelineItemProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const labelText = project.month ? `${project.month.substring(0, 3)} ${project.year} ` : project.year.toString();
+    const indexLabel = projectNumber !== undefined
+        ? `№ ${projectNumber.toString().padStart(2, "0")}`
+        : undefined;
 
     return (
         <TimelineItemContainer index={index} isLeft={isLeft}>
@@ -44,6 +48,7 @@ export function TimelineItem({ project, index, isLeft }: TimelineItemProps) {
                 <ProjectCard
                     project={project}
                     onClick={() => setIsModalOpen(true)}
+                    indexLabel={indexLabel}
                 />
             </TimelineContent>
 

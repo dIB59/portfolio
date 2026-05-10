@@ -3,14 +3,16 @@
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { useEffect, useMemo, useState } from "react";
 import { loadSlim } from "@tsparticles/slim";
+import { useTheme } from "next-themes";
 
-import { cn } from "@/lib/utils"; // Assuming this is your class utility function
-import { AnimatePresence, m } from "framer-motion"; // Using 'framer-motion' instead of 'motion/react' for standard setup
+import { cn } from "@/lib/utils";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 
 const ParticlesComponent = ({ className }: { className: string }) => {
     const [init, setInit] = useState(false);
+    const { resolvedTheme } = useTheme();
+    const prefersReducedMotion = useReducedMotion();
 
-    // 1. Initialize the tsParticles engine
     useEffect(() => {
         initParticlesEngine(async (engine) => {
             await loadSlim(engine);
@@ -19,19 +21,11 @@ const ParticlesComponent = ({ className }: { className: string }) => {
         });
     }, []);
 
-    const baseColor = "#ffffff";
-
-    const foregroundColor = "#1F1F1F";
+    const particleColor = resolvedTheme === "dark" ? "#74c694" : "#7ba588";
 
     const options = useMemo(
         () => ({
-            background: {
-                color: {
-                    value: baseColor,
-                },
-                opacity: 1,
-            },
-            fpsLimit: 60, // Limit FPS to save battery/CPU on mobile
+            fpsLimit: 60,
             interactivity: {
                 events: {
                     onClick: {
@@ -56,20 +50,20 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                     grab: {
                         distance: 150,
                         links: {
-                            opacity: 0.25,
+                            opacity: 0.15,
                         },
                     },
                 },
             },
             particles: {
                 color: {
-                    value: foregroundColor,
+                    value: particleColor,
                 },
                 links: {
-                    color: foregroundColor,
+                    color: particleColor,
                     enable: true,
                     distance: 150,
-                    opacity: 0.15,
+                    opacity: 0.08,
                     width: 1,
                 },
                 move: {
@@ -79,7 +73,7 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                         default: "bounce" as const,
                     },
                     random: true,
-                    speed: 1,
+                    speed: 0.6,
                     straight: false,
                 },
                 number: {
@@ -87,36 +81,35 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                         enable: true,
                         value_area: 800,
                     },
-                    value: 40, // Reduced base value
+                    value: 20,
                 },
                 opacity: {
-                    value: 1.0,
+                    value: 0.45,
                 },
                 shape: {
                     type: "circle",
                 },
                 size: {
-                    value: { min: 1, max: 3 },
+                    value: { min: 1, max: 2.5 },
                 },
             },
             detectRetina: true,
-            // Responsive overrides
             responsive: [
                 {
                     maxWidth: 768,
                     options: {
                         particles: {
                             number: {
-                                value: 25, // Much fewer particles on mobile
+                                value: 12,
                             },
                             links: {
-                                enable: false, // Disable links on mobile for performance
+                                enable: false,
                             },
                         },
                         interactivity: {
                             events: {
                                 onHover: {
-                                    enable: false, // Disable hover on mobile
+                                    enable: false,
                                 },
                             },
                         },
@@ -124,9 +117,10 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 },
             ],
         }),
-        [],
+        [particleColor],
     );
 
+    if (prefersReducedMotion) return null;
     if (!init) return null;
 
     return (
@@ -137,15 +131,14 @@ const ParticlesComponent = ({ className }: { className: string }) => {
                 animate={{ opacity: 1 }}
                 transition={{ type: "spring", duration: 2 }}
                 exit={{ opacity: 0 }}
-                // Ensure the div covers the whole screen and is behind content
                 className={cn(
                     "fixed inset-0 z-0 pointer-events-none",
                     className,
                 )}
+                aria-hidden="true"
             >
                 <Particles className="w-full h-full" options={options} />
             </m.div>
-            )
         </AnimatePresence>
     );
 };

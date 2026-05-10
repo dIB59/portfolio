@@ -37,6 +37,24 @@ export interface LeetCodeProblem {
     hints?: string[];
 }
 
+export const CONFIDENCE_LABELS: Record<Confidence, string> = {
+    green: "Confident",
+    yellow: "Needs Review",
+    red: "Struggled",
+};
+
+export const CONFIDENCE_DOT_CLASSES: Record<Confidence, string> = {
+    green: "bg-emerald-500",
+    yellow: "bg-amber-500",
+    red: "bg-rose-500",
+};
+
+export const CONFIDENCE_BORDER_CLASSES: Record<Confidence, string> = {
+    green: "border-emerald-500/40",
+    yellow: "border-amber-500/40",
+    red: "border-rose-500/40",
+};
+
 export const PROBLEM_TYPES: ProblemType[] = [
     "Array",
     "String",

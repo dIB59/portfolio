@@ -2,7 +2,7 @@
 
 import type { Project } from "@/lib/projects-data";
 import Image from "next/image";
-import { ExternalLink, Github } from "lucide-react";
+import { Check, ExternalLink, Github } from "lucide-react";
 import {
     Modal,
     ModalContent,
@@ -45,18 +45,21 @@ export function ProjectModal({
 
                     <div className="space-y-6">
                         <ModalSection title={aboutLabel}>
-                            <p className="leading-relaxed">
+                            <p className="leading-relaxed max-w-prose">
                                 {project.fullDescription || project.description}
                             </p>
                         </ModalSection>
 
                         {project.achievements && project.achievements.length > 0 && (
                             <ModalSection title={achievementsLabel}>
-                                <ul className="space-y-3">
+                                <ul className="space-y-2">
                                     {project.achievements.map((achievement, i) => (
-                                        <li key={i} className="flex items-start gap-3 text-muted-foreground group/item">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0 transition-transform group-hover/item:scale-125" />
-                                            {achievement}
+                                        <li key={i} className="flex items-start gap-2 text-foreground/90">
+                                            <Check
+                                                className="w-4 h-4 text-primary mt-0.5 shrink-0"
+                                                aria-hidden="true"
+                                            />
+                                            <span>{achievement}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -98,11 +101,11 @@ function ProjectMedia({ project }: { project: Project }) {
 function ProjectTechStack({ techStack }: { techStack: string[] }) {
     return (
         <ModalSection title="Tech Stack" className="space-y-3">
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-1">
                 {techStack.map((tech) => (
                     <span
                         key={tech}
-                        className="px-3 py-1.5 text-xs font-semibold bg-primary/5 text-primary border border-primary/10 rounded-full hover:bg-primary/10 transition-colors"
+                        className="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider border border-border rounded-md text-muted-foreground bg-card"
                     >
                         {tech}
                     </span>

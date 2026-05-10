@@ -39,11 +39,11 @@ function TimelineView({
             <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-0.5 bg-border md:-translate-x-1/2" />
 
             <m.div
-                className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-foreground md:-translate-x-1/2"
+                className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-primary md:-translate-x-1/2"
                 style={{ height: lineHeight }}
             />
 
-            <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-foreground md:-translate-x-1/2 -translate-y-1/2 z-10" />
+            <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-primary md:-translate-x-1/2 -translate-y-1/2 z-10" />
 
             {sortedMonths.map((month, monthIndex) => {
                 const [year, monthNum] = month.split("-");
@@ -149,7 +149,7 @@ export function LeetCodeSection() {
                         href="/"
                         className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
                     >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                         Back to Portfolio
                     </Link>
                 </m.div>
@@ -161,7 +161,7 @@ export function LeetCodeSection() {
                     viewport={{ once: true }}
                     className="text-center mb-12"
                 >
-                    <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                    <h1 className="font-display italic text-5xl md:text-6xl text-foreground mb-4 leading-tight">
                         LeetCode Journey
                     </h1>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -171,19 +171,19 @@ export function LeetCodeSection() {
 
                     <div className="flex justify-center gap-6 mt-6">
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-green-500" />
+                            <div className="w-3 h-3 rounded-full bg-emerald-500" aria-hidden="true" />
                             <span className="text-sm text-muted-foreground">
                                 Confident
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                            <div className="w-3 h-3 rounded-full bg-amber-500" aria-hidden="true" />
                             <span className="text-sm text-muted-foreground">
                                 Needs Review
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-red-500" />
+                            <div className="w-3 h-3 rounded-full bg-rose-500" aria-hidden="true" />
                             <span className="text-sm text-muted-foreground">
                                 Struggled
                             </span>
@@ -195,28 +195,32 @@ export function LeetCodeSection() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="flex justify-center gap-2 mb-8"
+                    className="flex justify-center mb-8"
                 >
-                    <Button
-                        variant={
-                            viewMode === "timeline" ? "default" : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setViewMode("timeline")}
-                        className="gap-2"
-                    >
-                        <LayoutGrid className="w-4 h-4" />
-                        Timeline
-                    </Button>
-                    <Button
-                        variant={viewMode === "table" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setViewMode("table")}
-                        className="gap-2"
-                    >
-                        <List className="w-4 h-4" />
-                        Table
-                    </Button>
+                    <div className="inline-flex items-center gap-1 p-1 bg-muted rounded-lg" role="tablist" aria-label="View mode">
+                        <Button
+                            variant={viewMode === "timeline" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setViewMode("timeline")}
+                            className="gap-2"
+                            role="tab"
+                            aria-selected={viewMode === "timeline"}
+                        >
+                            <LayoutGrid className="w-4 h-4" aria-hidden="true" />
+                            Timeline
+                        </Button>
+                        <Button
+                            variant={viewMode === "table" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setViewMode("table")}
+                            className="gap-2"
+                            role="tab"
+                            aria-selected={viewMode === "table"}
+                        >
+                            <List className="w-4 h-4" aria-hidden="true" />
+                            Table
+                        </Button>
+                    </div>
                 </m.div>
 
                 {isLoading ? (
