@@ -159,3 +159,28 @@
 .text-pretty {
   text-wrap: pretty;
 }
+
+/* Cross-document View Transitions: when the visitor crosses between
+   pages of this origin (e.g. cover `/` → `/story`, or any chapter
+   anchor → back to cover), the browser captures the outgoing snapshot,
+   loads the incoming page, then crossfades them. Supported in Chrome/
+   Edge 126+ and Safari 18+; falls back to instant navigation in
+   older browsers. */
+@view-transition {
+  navigation: auto;
+}
+
+/* Slightly slow + ease the default crossfade so the swap feels
+   composed rather than abrupt. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
