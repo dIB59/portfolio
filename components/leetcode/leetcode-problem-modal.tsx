@@ -7,7 +7,11 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { LeetCodeProblem } from "@/lib/types/leetcode";
+import {
+    type LeetCodeProblem,
+    CONFIDENCE_LABELS,
+    CONFIDENCE_DOT_CLASSES,
+} from "@/lib/types/leetcode";
 import NextImage from "next/image";
 
 interface LeetCodeProblemModalProps {
@@ -16,6 +20,18 @@ interface LeetCodeProblemModalProps {
     onClose: () => void;
 }
 
+const difficultyTone: Record<string, string> = {
+    easy: "text-emerald-300/90",
+    medium: "text-amber-300/90",
+    hard: "text-rose-300/90",
+};
+
+const DATE_FMT = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+});
+
 export function LeetCodeProblemModal({
     problem,
     isOpen,
@@ -23,130 +39,121 @@ export function LeetCodeProblemModal({
 }: LeetCodeProblemModalProps) {
     if (!problem) return null;
 
-    const confidenceColors = {
-        green: "bg-green-500",
-        yellow: "bg-yellow-500",
-        red: "bg-red-500",
-    };
-
-    const confidenceBorders = {
-        green: "border-green-500/30",
-        yellow: "border-yellow-500/30",
-        red: "border-red-500/30",
-    };
-
-    const difficultyBorders = {
-        easy: "border-green-500/30",
-        medium: "border-yellow-500/30",
-        hard: "border-red-500/30",
-    };
-
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-3xl max-h-[90vh]">
-                <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-foreground">
-                        {problem.problemNumber && (
-                            <span className="text-muted-foreground font-normal">
-                                #{problem.problemNumber}{" "}
-                            </span>
-                        )}
-                        {problem.name}
-                    </DialogTitle>
-                    <div className="flex flex-wrap gap-2 mt-3">
-                        <span
-                            className={`px-2 py-1 text-xs font-medium rounded-md text-muted-foreground border ${difficultyBorders[problem.difficulty]}`}
-                        >
-                            {problem.difficulty.charAt(0).toUpperCase() +
-                                problem.difficulty.slice(1)}
-                        </span>
-                        <span className="px-2 py-1 text-xs font-medium bg-muted rounded-md text-muted-foreground">
-                            {problem.type}
-                        </span>
-                        <span className="px-2 py-1 text-xs font-medium bg-muted rounded-md text-muted-foreground">
-                            {new Date(problem.solvedDate).toLocaleDateString()}
-                        </span>
-                        <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-muted rounded-md">
-                            <div
-                                className={`w-2 h-2 rounded-full ${confidenceColors[problem.confidence]}`}
-                            />
-                            <span className="text-xs font-medium text-muted-foreground">
-                                {problem.confidence === "green"
-                                    ? "Confident"
-                                    : problem.confidence === "yellow"
-                                        ? "Needs Review"
-                                        : "Struggled"}
-                            </span>
-                        </div>
-                    </div>
-                </DialogHeader>
+            <DialogContent className="max-w-3xl max-h-[90vh] p-0 overflow-hidden">
+                <ScrollArea className="max-h-[90vh]">
+                    <div className="px-8 md:px-10 py-10 md:py-12">
+                        <DialogHeader className="space-y-6">
+                            <p className="text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground">
+                                <span className="inline-block w-6 h-px bg-accent align-middle mr-2" />
+                                Entry · {DATE_FMT.format(new Date(problem.solvedDate))}
+                            </p>
+                            <DialogTitle
+                                className="font-display text-foreground leading-[0.95] tracking-[-0.025em] text-balance"
+                                style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
+                            >
+                                {problem.problemNumber !== undefined && (
+                                    <span className="text-muted-foreground font-mono text-[0.55em] mr-3 align-baseline tabular-nums">
+                                        #{problem.problemNumber}
+                                    </span>
+                                )}
+                                {problem.name}
+                            </DialogTitle>
 
-                <ScrollArea className="flex-1 -mr-6 pr-6">
-                    <div className="space-y-4 py-4">
-                        {/* Stuck On Section */}
-                        {problem.stuckOn && (
-                            <div className="bg-card/80 backdrop-blur-sm rounded-xl p-4 border-2 border-red-500/30 shadow-lg">
-                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                    Got stuck on:
+                            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-mono uppercase tracking-[0.18em]">
+                                <span className={difficultyTone[problem.difficulty]}>
+                                    {problem.difficulty}
                                 </span>
-                                <p className="text-sm text-foreground/80 mt-2 leading-relaxed">
-                                    {problem.stuckOn}
-                                </p>
-                            </div>
-                        )}
-
-                        {/* Hints Section */}
-                        {problem.hints && problem.hints.length > 0 && (
-                            <div className="space-y-3">
-                                <p className="font-medium text-sm text-foreground">Hints:</p>
-                                <div className="grid gap-2">
-                                    {problem.hints.map((hint, i) => (
-                                        <div
-                                            key={i}
-                                            className="p-3 bg-muted/50 rounded-lg text-sm text-foreground border border-border/50"
-                                        >
-                                            <span className="font-medium text-foreground mr-2">
-                                                {i + 1}.
-                                            </span>
-                                            {hint}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Notes Section */}
-                        {problem.notes && (
-                            <div className="bg-muted/50 rounded-lg p-4">
-                                <p className="font-medium text-foreground mb-2 text-sm">
-                                    Notes:
-                                </p>
-                                <pre className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed font-mono">
-                                    {problem.notes}
-                                </pre>
-                            </div>
-                        )}
-
-                        {/* Image Section */}
-                        {problem.image && (
-                            <div className="space-y-2">
-                                <p className="font-medium text-sm text-foreground">
-                                    Screenshot / Diagram:
-                                </p>
-                                <div className="rounded-lg overflow-hidden border bg-muted relative aspect-video">
-                                    <NextImage
-                                        src={problem.image}
-                                        alt={`Visual reference for ${problem.name}`}
-                                        fill
-                                        className="object-contain"
-                                        sizes="(max-width: 768px) 100vw, 800px"
+                                <span className="text-muted-foreground/60">·</span>
+                                <span className="text-muted-foreground">{problem.type}</span>
+                                <span className="text-muted-foreground/60">·</span>
+                                <span className="inline-flex items-center gap-2 text-muted-foreground">
+                                    <span
+                                        className={`w-1.5 h-1.5 rounded-full ${CONFIDENCE_DOT_CLASSES[problem.confidence]}`}
+                                        aria-hidden="true"
                                     />
-                                </div>
+                                    {CONFIDENCE_LABELS[problem.confidence]}
+                                </span>
                             </div>
-                        )}
+                        </DialogHeader>
+
+                        <div className="mt-10 space-y-8">
+                            {problem.stuckOn && (
+                                <Field label="Got stuck on">
+                                    <p className="text-foreground/85 text-pretty leading-relaxed">
+                                        {problem.stuckOn}
+                                    </p>
+                                </Field>
+                            )}
+
+                            {problem.hints && problem.hints.length > 0 && (
+                                <Field label="Hints">
+                                    <ul className="space-y-3">
+                                        {problem.hints.map((hint, i) => (
+                                            <li
+                                                key={i}
+                                                className="flex items-baseline gap-4 text-foreground/85 leading-relaxed text-pretty"
+                                            >
+                                                <span
+                                                    className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent/80 w-5 shrink-0 tabular-nums"
+                                                    aria-hidden="true"
+                                                >
+                                                    {String(i + 1).padStart(2, "0")}
+                                                </span>
+                                                <span>{hint}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </Field>
+                            )}
+
+                            {problem.notes && (
+                                <Field label="Notes">
+                                    <pre className="text-foreground/85 whitespace-pre-wrap leading-relaxed font-mono text-sm">
+                                        {problem.notes}
+                                    </pre>
+                                </Field>
+                            )}
+
+                            {problem.image && (
+                                <Field label="Reference">
+                                    <div className="rounded-sm overflow-hidden border border-border/60 bg-muted/40 relative aspect-video">
+                                        {/* unoptimized — the user pastes references
+                                            from arbitrary hosts; the next/image
+                                            allowlist would block most of them. */}
+                                        <NextImage
+                                            src={problem.image}
+                                            alt={`Visual reference for ${problem.name}`}
+                                            fill
+                                            unoptimized
+                                            className="object-contain"
+                                            sizes="(max-width: 768px) 100vw, 800px"
+                                        />
+                                    </div>
+                                </Field>
+                            )}
+                        </div>
                     </div>
                 </ScrollArea>
             </DialogContent>
         </Dialog>
+    );
+}
+
+function Field({
+    label,
+    children,
+}: {
+    label: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <section className="space-y-3 pt-6 border-t border-border/40 first:border-t-0 first:pt-0">
+            <h3 className="text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+                {label}
+            </h3>
+            <div>{children}</div>
+        </section>
     );
 }

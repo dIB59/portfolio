@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Github, Linkedin } from "lucide-react";
 
 const SOCIAL = [
     { href: "https://github.com/dIB59", label: "GitHub", icon: Github },
@@ -8,7 +8,6 @@ const SOCIAL = [
         label: "LinkedIn",
         icon: Linkedin,
     },
-    { href: "mailto:ibrahim@alvalabs.io", label: "Email", icon: Mail },
 ];
 
 export function SiteFooter() {
@@ -19,12 +18,12 @@ export function SiteFooter() {
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-10">
                 <div className="space-y-4 max-w-md">
                     <p
-                        className="font-display italic text-foreground leading-tight"
-                        style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
+                        className="font-display text-foreground leading-tight tracking-[-0.02em]"
+                        style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)" }}
                     >
                         Let&rsquo;s build something.
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-foreground/70">
                         Open to interesting work — full-time, contract, or a
                         well-defined project.
                     </p>

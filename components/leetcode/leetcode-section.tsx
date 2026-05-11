@@ -1,244 +1,81 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { m, useScroll, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
+import { m } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, LayoutGrid, List, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import type { LeetCodeProblem } from "@/lib/types/leetcode";
 import { getLeetCodeProblems } from "@/lib/supabase/leetcode";
-import { LeetCodeItem } from "./leetcode-item";
-import { LeetCodeTable } from "./leetcode-table";
-import { Button } from "@/components/ui/button";
+import { LeetCodeLedger } from "./leetcode-ledger";
 
-// --- 1. Sub-component for the Timeline Logic ---
-// We move the useScroll hook here so it only runs when this component is mounted (after loading).
-function TimelineView({
-    problems,
-    groupedByMonth,
-    sortedMonths,
-}: {
-    problems: LeetCodeProblem[];
-    groupedByMonth: Record<string, LeetCodeProblem[]>;
-    sortedMonths: string[];
-}) {
-    const timelineRef = useRef<HTMLDivElement>(null);
-
-    const { scrollYProgress } = useScroll({
-        target: timelineRef,
-        offset: ["start 10%", "end 90%"],
-    });
-
-    const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
-    // Reset index for this view
-    let globalIndex = 0;
-
-    return (
-        <div className="relative max-w-4xl mx-auto" ref={timelineRef}>
-            {/* Static background line - full height */}
-            <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-0.5 bg-border md:-translate-x-1/2" />
-
-            <m.div
-                className="absolute left-[19px] md:left-1/2 top-0 w-0.5 bg-primary md:-translate-x-1/2"
-                style={{ height: lineHeight }}
-            />
-
-            <div className="absolute left-[19px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-primary md:-translate-x-1/2 -translate-y-1/2 z-10" />
-
-            {sortedMonths.map((month, monthIndex) => {
-                const [year, monthNum] = month.split("-");
-                const monthName = new Date(
-                    Number.parseInt(year),
-                    Number.parseInt(monthNum) - 1,
-                ).toLocaleString("default", {
-                    month: "long",
-                    year: "numeric",
-                });
-
-                return (
-                    <div key={month} className="mb-12">
-                        <m.div
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{
-                                duration: 0.5,
-                                delay: monthIndex * 0.1,
-                            }}
-                            viewport={{ once: true, margin: "-100px" }}
-                            className="pl-12 md:pl-0 md:text-center mb-6"
-                        >
-                            <span className="text-lg font-semibold text-foreground bg-background px-4 relative z-10">
-                                {monthName}
-                            </span>
-                        </m.div>
-
-                        {groupedByMonth[month].map((problem) => {
-                            const currentIndex = globalIndex++;
-                            return (
-                                <LeetCodeItem
-                                    key={problem.id}
-                                    problem={problem}
-                                    index={currentIndex}
-                                    isAdmin={false}
-                                    onDelete={() => { }}
-                                />
-                            );
-                        })}
-                    </div>
-                );
-            })}
-
-            {problems.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                    No problems tracked yet. Check back later!
-                </div>
-            ) : (
-                /* End cap dot */
-                <div className="absolute left-[19px] md:left-1/2 bottom-0 w-3 h-3 rounded-full bg-border md:-translate-x-1/2 translate-y-1/2" />
-            )}
-        </div>
-    );
-}
-
-// --- 2. Main Component ---
 export function LeetCodeSection() {
-    const containerRef = useRef<HTMLDivElement>(null);
     const [problems, setProblems] = useState<LeetCodeProblem[]>([]);
-    const [viewMode, setViewMode] = useState<"timeline" | "table">("timeline");
     const [isLoading, setIsLoading] = useState(true);
 
-    // Removed useScroll from here because timelineRef isn't reliable at this level
-
     useEffect(() => {
-        async function fetchProblems() {
+        let cancelled = false;
+        (async () => {
             const data = await getLeetCodeProblems();
-            setProblems(data);
-            setIsLoading(false);
-        }
-        fetchProblems();
+            if (!cancelled) {
+                setProblems(data);
+                setIsLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
-    const groupedByMonth = problems.reduce(
-        (acc, problem) => {
-            const date = new Date(problem.solvedDate);
-            const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-            if (!acc[key]) acc[key] = [];
-            acc[key].push(problem);
-            return acc;
-        },
-        {} as Record<string, LeetCodeProblem[]>,
-    );
-
-    const sortedMonths = Object.keys(groupedByMonth).sort((a, b) =>
-        b.localeCompare(a),
-    );
-
     return (
-        <section
-            className="py-20 px-4 relative min-h-screen"
-            ref={containerRef}
-        >
-            <div className="max-w-7xl mx-auto">
+        <section className="relative min-h-screen px-6 md:px-12 lg:px-20 pt-20 pb-32">
+            <div className="max-w-5xl mx-auto">
                 <m.div
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="mb-8"
+                    className="mb-16 md:mb-24"
                 >
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                        className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground hover:text-accent transition-colors"
                     >
-                        <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-                        Back to Portfolio
+                        <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+                        Back to portfolio
                     </Link>
                 </m.div>
 
-                <m.div
+                <m.header
                     initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-12"
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="mb-16 md:mb-24 max-w-3xl"
                 >
-                    <h1 className="font-display italic text-5xl md:text-6xl text-foreground mb-4 leading-tight">
-                        LeetCode Journey
-                    </h1>
-                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        Tracking my problem-solving progress, one algorithm at a
-                        time.
+                    <p className="text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground mb-6">
+                        <span className="inline-block w-6 h-px bg-accent align-middle mr-2" />
+                        Side quest
                     </p>
-
-                    <div className="flex justify-center gap-6 mt-6">
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-emerald-500" aria-hidden="true" />
-                            <span className="text-sm text-muted-foreground">
-                                Confident
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-amber-500" aria-hidden="true" />
-                            <span className="text-sm text-muted-foreground">
-                                Needs Review
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-rose-500" aria-hidden="true" />
-                            <span className="text-sm text-muted-foreground">
-                                Struggled
-                            </span>
-                        </div>
-                    </div>
-                </m.div>
-
-                <m.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="flex justify-center mb-8"
-                >
-                    <div className="inline-flex items-center gap-1 p-1 bg-muted rounded-lg" role="tablist" aria-label="View mode">
-                        <Button
-                            variant={viewMode === "timeline" ? "default" : "ghost"}
-                            size="sm"
-                            onClick={() => setViewMode("timeline")}
-                            className="gap-2"
-                            role="tab"
-                            aria-selected={viewMode === "timeline"}
-                        >
-                            <LayoutGrid className="w-4 h-4" aria-hidden="true" />
-                            Timeline
-                        </Button>
-                        <Button
-                            variant={viewMode === "table" ? "default" : "ghost"}
-                            size="sm"
-                            onClick={() => setViewMode("table")}
-                            className="gap-2"
-                            role="tab"
-                            aria-selected={viewMode === "table"}
-                        >
-                            <List className="w-4 h-4" aria-hidden="true" />
-                            Table
-                        </Button>
-                    </div>
-                </m.div>
+                    <h1
+                        className="font-display text-foreground leading-[0.9] tracking-[-0.035em] mb-6"
+                        style={{ fontSize: "clamp(3rem, 9vw, 7rem)" }}
+                    >
+                        Practice.
+                    </h1>
+                    <p className="text-foreground/75 text-base md:text-lg leading-relaxed text-pretty max-w-xl">
+                        Algorithms, kept fresh. Mistakes, written down so I
+                        don&rsquo;t repeat them. A running log — not a
+                        leaderboard.
+                    </p>
+                </m.header>
 
                 {isLoading ? (
-                    <div className="flex justify-center py-12">
-                        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                    <div className="flex justify-center py-24">
+                        <Loader2
+                            className="w-6 h-6 animate-spin text-muted-foreground"
+                            aria-label="Loading"
+                        />
                     </div>
-                ) : viewMode === "table" ? (
-                    <LeetCodeTable
-                        problems={problems}
-                        isAdmin={false}
-                        onDelete={() => { }}
-                    />
                 ) : (
-                    <TimelineView
-                        problems={problems}
-                        groupedByMonth={groupedByMonth}
-                        sortedMonths={sortedMonths}
-                    />
+                    <LeetCodeLedger problems={problems} />
                 )}
             </div>
         </section>

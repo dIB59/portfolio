@@ -57,7 +57,7 @@ export const metadata: Metadata = {
         siteName: "Ibrahim Iqbal Portfolio",
         images: [
             {
-                url: "/sleek-sports-car-exterior.jpg",
+                url: "/icon.svg",
                 width: 1200,
                 height: 630,
                 alt: "Ibrahim Iqbal Portfolio",
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Ibrahim Iqbal | Full-Stack Developer",
         description: "Full-Stack Developer - Career journey and project showcase",
-        images: ["/sleek-sports-car-exterior.jpg"],
+        images: ["/icon.svg"],
         creator: "@ibrahimiqbal",
     },
     robots: {
@@ -115,8 +115,8 @@ export default function RootLayout({
             <body className="font-sans antialiased">
                 <ThemeProvider
                     attribute="class"
-                    defaultTheme="system"
-                    enableSystem
+                    defaultTheme="dark"
+                    enableSystem={false}
                     disableTransitionOnChange
                 >
                     <MotionProvider>{children}</MotionProvider>

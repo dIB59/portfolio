@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import ParticlesComponent from "@/components/three-background";
 import { LeetCodeSection } from "@/components/leetcode/leetcode-section";
 
 export const metadata: Metadata = {
@@ -10,10 +9,7 @@ export const metadata: Metadata = {
 export default function LeetCodePage() {
     return (
         <main className="relative min-h-screen bg-background overflow-hidden">
-            <ParticlesComponent className={""} />
-            <div className="relative z-10">
-                <LeetCodeSection />
-            </div>
+            <LeetCodeSection />
         </main>
     );
 }
