@@ -4,17 +4,10 @@ import { Preface } from "@/components/preface";
 import { ChapterSpread } from "@/components/chapter-spread";
 import { Interlude } from "@/components/interludes/interlude";
 import { getProjects } from "@/lib/db/projects";
-import { CHAPTER_COPY, sortIntoChapters, type ChapterCopy } from "@/lib/story";
+import { chapterCopyFor, sortIntoChapters } from "@/lib/story";
 import { Analytics } from "@vercel/analytics/next";
 import { ContactForm } from "@/components/contact/contact-form";
 import { SiteFooter } from "@/components/site-footer";
-
-// IDs that should be followed by a 3D interlude. Keyed off the project they
-// follow so the story stays right even if a new project is inserted.
-const INTERLUDE_AFTER: Record<string, "triangle" | "particles"> = {
-    "79677700-de99-4ef7-a79e-b769400d5efd": "triangle", // after Graviplex
-    "48d97a42-5f12-45cd-b3d5-56c5e08c3345": "particles", // after Particle Game
-};
 
 export const dynamic = "force-dynamic";
 
@@ -26,13 +19,8 @@ async function ChaptersData() {
     return (
         <>
             {ordered.map((project, index) => {
-                const copy: ChapterCopy =
-                    CHAPTER_COPY[project.id] ?? {
-                        pullQuote: project.description,
-                        narrative: project.description,
-                    };
+                const copy = chapterCopyFor(project);
                 const chapterNumber = String(index + 1).padStart(2, "0");
-                const interlude = INTERLUDE_AFTER[project.id];
 
                 return (
                     <Fragment key={project.id}>
@@ -43,7 +31,9 @@ async function ChaptersData() {
                             index={index}
                             isLast={index === total - 1}
                         />
-                        {interlude && <Interlude kind={interlude} />}
+                        {project.interludeAfter && (
+                            <Interlude kind={project.interludeAfter} />
+                        )}
                     </Fragment>
                 );
             })}

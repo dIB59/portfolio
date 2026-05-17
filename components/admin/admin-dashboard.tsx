@@ -4,26 +4,19 @@ import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-    ArrowLeft,
-    LogOut,
-    FolderKanban,
-    Code2,
-    RefreshCw,
-} from "lucide-react";
+import { ArrowLeft, LogOut, FolderKanban, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProjectsAdmin } from "@/components/admin/projects-admin";
-import { ProjectUpdatesAdmin } from "@/components/admin/project-updates-admin";
 import { LeetCodeAdminPanel } from "../leetcode/leetcode-admin-panel";
 
 interface AdminDashboardProps {
     userEmail: string;
 }
 
+type Tab = "projects" | "leetcode";
+
 export function AdminDashboard({ userEmail }: AdminDashboardProps) {
-    const [activeTab, setActiveTab] = useState<
-        "projects" | "updates" | "leetcode"
-    >("projects");
+    const [activeTab, setActiveTab] = useState<Tab>("projects");
     const router = useRouter();
 
     const handleLogout = async () => {
@@ -35,7 +28,6 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
         <main className="min-h-screen bg-background relative">
             <div className="relative z-10 py-12 px-4">
                 <div className="max-w-5xl mx-auto">
-                    {/* Header */}
                     <m.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -67,7 +59,6 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
                         </p>
                     </m.div>
 
-                    {/* Logout button */}
                     <div className="flex justify-end mb-6">
                         <Button
                             variant="outline"
@@ -92,16 +83,6 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
                         </Button>
                         <Button
                             variant={
-                                activeTab === "updates" ? "default" : "outline"
-                            }
-                            onClick={() => setActiveTab("updates")}
-                            className="gap-2"
-                        >
-                            <RefreshCw className="w-4 h-4" />
-                            Project Updates
-                        </Button>
-                        <Button
-                            variant={
                                 activeTab === "leetcode" ? "default" : "outline"
                             }
                             onClick={() => setActiveTab("leetcode")}
@@ -121,15 +102,6 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
                                 exit={{ opacity: 0, x: 20 }}
                             >
                                 <ProjectsAdmin />
-                            </m.div>
-                        ) : activeTab === "updates" ? (
-                            <m.div
-                                key="updates-tab"
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 20 }}
-                            >
-                                <ProjectUpdatesAdmin />
                             </m.div>
                         ) : (
                             <m.div

@@ -25,7 +25,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import type { Project } from "@/lib/projects-data";
+import type { InterludeKind, Project } from "@/lib/projects-data";
 import {
     getProjects,
     addProject,
@@ -180,6 +180,16 @@ export function ProjectsAdmin() {
                                                     : ""}
                                                 {project.year}
                                             </span>
+                                            {project.chapterOrder != null && (
+                                                <span className="text-xs font-mono text-accent bg-accent/10 px-2 py-0.5 rounded">
+                                                    Ch. {project.chapterOrder}
+                                                </span>
+                                            )}
+                                            {project.interludeAfter && (
+                                                <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                                                    + {project.interludeAfter}
+                                                </span>
+                                            )}
                                         </div>
                                         <p className="text-sm text-muted-foreground line-clamp-2">
                                             {project.description}
@@ -265,6 +275,17 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
     const [image, setImage] = useState(initialData?.image || "");
     const [imagePreview, setImagePreview] = useState(initialData?.image || "");
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [pullQuote, setPullQuote] = useState(initialData?.pullQuote || "");
+    const [narrative, setNarrative] = useState(initialData?.narrative || "");
+    const [transitionAfter, setTransitionAfter] = useState(
+        initialData?.transitionAfter || "",
+    );
+    const [chapterOrder, setChapterOrder] = useState(
+        initialData?.chapterOrder?.toString() ?? "",
+    );
+    const [interludeAfter, setInterludeAfter] = useState<InterludeKind | "">(
+        initialData?.interludeAfter ?? "",
+    );
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -298,6 +319,10 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
             }
         }
 
+        const parsedOrder = chapterOrder.trim() === ""
+            ? undefined
+            : Number.parseInt(chapterOrder, 10);
+
         await onSubmit({
             title: title.trim(),
             year: Number.parseInt(year),
@@ -314,6 +339,11 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
             liveUrl: liveUrl.trim() || undefined,
             githubUrl: githubUrl.trim() || undefined,
             image: imageUrl || undefined,
+            pullQuote: pullQuote.trim() || undefined,
+            narrative: narrative.trim() || undefined,
+            transitionAfter: transitionAfter.trim() || undefined,
+            chapterOrder: Number.isFinite(parsedOrder) ? parsedOrder : undefined,
+            interludeAfter: interludeAfter || undefined,
         });
         setIsSubmitting(false);
     };
@@ -487,6 +517,88 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
                         value={githubUrl}
                         onChange={(e) => setGithubUrl(e.target.value)}
                         placeholder="https://github.com/..."
+                    />
+                </div>
+
+                <div className="md:col-span-2 pt-2">
+                    <div className="border-t border-border/60 pt-4">
+                        <h4 className="text-sm font-semibold text-foreground mb-1">
+                            Chapter
+                        </h4>
+                        <p className="text-xs text-muted-foreground mb-4">
+                            How this project appears on the /story page. Leave
+                            blank to hide from the story or fall back to the
+                            short description.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-2">
+                        <Label htmlFor="chapterOrder">Chapter order</Label>
+                        <Input
+                            id="chapterOrder"
+                            type="number"
+                            min={1}
+                            value={chapterOrder}
+                            onChange={(e) => setChapterOrder(e.target.value)}
+                            placeholder="e.g., 1"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="interludeAfter">
+                            Interlude after this chapter
+                        </Label>
+                        <Select
+                            value={interludeAfter || "none"}
+                            onValueChange={(v) =>
+                                setInterludeAfter(
+                                    v === "none" ? "" : (v as InterludeKind),
+                                )
+                            }
+                        >
+                            <SelectTrigger id="interludeAfter">
+                                <SelectValue placeholder="None" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="none">None</SelectItem>
+                                <SelectItem value="triangle">Triangle</SelectItem>
+                                <SelectItem value="particles">Particles</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="pullQuote">Pull-quote</Label>
+                    <Input
+                        id="pullQuote"
+                        value={pullQuote}
+                        onChange={(e) => setPullQuote(e.target.value)}
+                        placeholder="One memorable line, shown oversized"
+                    />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="narrative">Narrative</Label>
+                    <Textarea
+                        id="narrative"
+                        value={narrative}
+                        onChange={(e) => setNarrative(e.target.value)}
+                        placeholder="Long-form prose, two paragraphs max"
+                        rows={6}
+                    />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="transitionAfter">
+                        Transition into next chapter
+                    </Label>
+                    <Input
+                        id="transitionAfter"
+                        value={transitionAfter}
+                        onChange={(e) => setTransitionAfter(e.target.value)}
+                        placeholder="Bridge line shown after this chapter"
                     />
                 </div>
             </div>

@@ -1,3 +1,5 @@
+export type InterludeKind = "triangle" | "particles";
+
 export interface Project {
     id: string;
     title: string;
@@ -10,25 +12,15 @@ export interface Project {
     achievements?: string[];
     liveUrl?: string;
     githubUrl?: string;
+    // Chapter fields. The /story page reads these directly; the projects admin
+    // edits them inline. A project without `chapterOrder` is appended to the
+    // end of the story.
+    pullQuote?: string;
+    narrative?: string;
+    transitionAfter?: string;
+    chapterOrder?: number;
+    interludeAfter?: InterludeKind;
 }
 
-export interface ProjectUpdate {
-    id: string;
-    projectId: string;
-    projectTitle?: string; // Populated from join
-    year: number;
-    month?: string;
-    description: string;
-    changes: string[];
-}
-
-export interface TimelineEntry {
-    type: "project" | "update";
-    id: string;
-    year: number;
-    month?: string;
-    data: Project | ProjectUpdate;
-}
-
-// Default projects data - now fetched from Supabase
+// Default projects data — fetched from Postgres.
 export const projectsData: Project[] = [];
