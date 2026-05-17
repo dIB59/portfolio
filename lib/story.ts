@@ -45,9 +45,9 @@ export const CHAPTER_COPY: Record<string, ChapterCopy> = {
         transitionAfter: "After Equity AI I needed a break from leading. I wanted to be back in the code, alone.",
     },
     "79677700-de99-4ef7-a79e-b769400d5efd": {
-        pullQuote: "Rendered one circle. Rendered one triangle.",
+        pullQuote: "Rendered one triangle. Rendered one circle.",
         narrative:
-            "Spent a couple of weekends trying to write a renderer in Rust and WebGPU. Got a circle. Eventually got a triangle. That's basically the whole repo. WebGPU is much harder than the tutorials make it look.",
+            "Spent a couple of weekends trying to write a renderer in Rust and WebGPU. Got a triangle. Eventually got a circle. That's basically the whole repo. WebGPU is much harder than the tutorials make it look.",
         transitionAfter: "A circle and a triangle wasn't really the project. I came back for it later.",
     },
     "48d97a42-5f12-45cd-b3d5-56c5e08c3345": {
