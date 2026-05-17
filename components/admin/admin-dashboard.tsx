@@ -12,7 +12,6 @@ import {
     RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
 import { ProjectsAdmin } from "@/components/admin/projects-admin";
 import { ProjectUpdatesAdmin } from "@/components/admin/project-updates-admin";
 import { LeetCodeAdminPanel } from "../leetcode/leetcode-admin-panel";
@@ -28,8 +27,7 @@ export function AdminDashboard({ userEmail }: AdminDashboardProps) {
     const router = useRouter();
 
     const handleLogout = async () => {
-        const supabase = createClient();
-        await supabase.auth.signOut();
+        await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
         router.push("/");
     };
 

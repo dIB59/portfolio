@@ -8,7 +8,10 @@
     "lint": "eslint .",
     "start": "next start",
     "analyze": "ANALYZE=true npm run build",
-    "lighthouse": "lighthouse http://localhost:3000 --view --preset=desktop"
+    "lighthouse": "lighthouse http://localhost:3000 --view --preset=desktop",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "next build && vitest run"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
@@ -51,6 +54,7 @@
     "lighthouse": "^13.0.1",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.6"
   }
 }

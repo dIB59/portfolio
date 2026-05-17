@@ -31,7 +31,7 @@ import {
     addProject,
     updateProject,
     deleteProject,
-} from "@/lib/supabase/projects";
+} from "@/lib/db/projects";
 import { revalidatePortfolio } from "@/app/actions/revalidate";
 
 const MONTHS = [
@@ -291,7 +291,7 @@ function ProjectForm({ initialData, onSubmit, onCancel }: ProjectFormProps) {
 
         // Upload image if a new file was selected
         if (imageFile) {
-            const { uploadImage } = await import("@/lib/supabase/storage");
+            const { uploadImage } = await import("@/lib/uploads");
             const uploadedUrl = await uploadImage(imageFile);
             if (uploadedUrl) {
                 imageUrl = uploadedUrl;

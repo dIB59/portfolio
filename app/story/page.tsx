@@ -3,7 +3,7 @@ import { Hero } from "@/components/hero";
 import { Preface } from "@/components/preface";
 import { ChapterSpread } from "@/components/chapter-spread";
 import { Interlude } from "@/components/interludes/interlude";
-import { getProjects } from "@/lib/supabase/projects";
+import { getProjects } from "@/lib/db/projects";
 import { CHAPTER_COPY, sortIntoChapters, type ChapterCopy } from "@/lib/story";
 import { Analytics } from "@vercel/analytics/next";
 import { ContactForm } from "@/components/contact/contact-form";

@@ -31,7 +31,7 @@ import {
     updateLeetCodeProblem,
     deleteLeetCodeProblem,
     addLeetCodeProblem,
-} from "@/lib/supabase/leetcode";
+} from "@/lib/db/leetcode";
 import { revalidatePortfolio } from "@/app/actions/revalidate";
 
 export function LeetCodeAdminPanel() {

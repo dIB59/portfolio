@@ -5,7 +5,7 @@ import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import type { LeetCodeProblem } from "@/lib/types/leetcode";
-import { getLeetCodeProblems } from "@/lib/supabase/leetcode";
+import { getLeetCodeProblems } from "@/lib/db/leetcode";
 import { LeetCodeLedger } from "./leetcode-ledger";
 
 export function LeetCodeSection() {

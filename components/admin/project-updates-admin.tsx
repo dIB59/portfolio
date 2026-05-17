@@ -17,8 +17,8 @@ import {
     deleteProjectUpdate,
     getProjectUpdates,
     updateProjectUpdate,
-} from "@/lib/supabase/project-updates";
-import { getProjects } from "@/lib/supabase/projects";
+} from "@/lib/db/project-updates";
+import { getProjects } from "@/lib/db/projects";
 import { revalidatePortfolio } from "@/app/actions/revalidate";
 import { AnimatePresence, m } from "framer-motion";
 import {
